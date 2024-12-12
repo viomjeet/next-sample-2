@@ -118,16 +118,16 @@ function page() {
         {alert}
       </span>
       <form
-        className="bg-teal-400 pt-2 pb-6 shadow-sm px-4 mb-5"
+        className="bg-slate-100 pt-2 pb-6 shadow-sm px-4 mb-5"
         onSubmit={handlesaveTodos}
       >
-        <h4 className="my-2">Experience new way to adding list in next-js.</h4>
+        <h4 className="my-2 text-slate-800 [text-shadow:_0_2px_2px_rgb(0_0_0_/_10%)]">Experience new way to adding list in next-js.</h4>
         <div className="flex items-end flex-col justify-between">
           <textarea
             rows={2}
             className={`${
               titleError ? "border-red-500" : "border-white"
-            } flex-1 border-2 w-full mb-4 p-2 outline-none rounded-sm focus:border-green-500`}
+            } flex-1 border-2 w-full mb-4 p-2 outline-none shadow-lg rounded-sm focus:border-green-500`}
             name="title"
             value={todo}
             onChange={(event: any) => setTodo(event.target.value)}
@@ -135,7 +135,7 @@ function page() {
           />
           <button
             type="submit"
-            className="bg-slate-500 border-2 border-slate-500 text-white p-2 border-radius-2 focus:ring-2 hover:bg-slate-600 hover:border-slate-700 rounded-sm"
+            className="bg-slate-500 border-2 border-slate-500 shadow-md text-white p-2 border-radius-2 focus:ring-2 hover:bg-slate-600 hover:border-slate-700 rounded-sm"
           >
             {editTodo !== "" ? "Update" : "Add"} Todo
           </button>
