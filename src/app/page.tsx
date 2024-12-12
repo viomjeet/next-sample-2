@@ -5,6 +5,7 @@ import { MdDeleteOutline } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { MdClear } from "react-icons/md";
 import Link from "next/link";
+import { confirmAlert } from "react-confirm-alert";
 function page() {
   const [todos, setTodos] = useState([]);
   const [todo, setTodo] = useState("");
@@ -70,16 +71,33 @@ function page() {
   };
 
   const handleDelete = async (id: any) => {
-    const data = await axios.delete(`/api/${id}`);
-    if (data.status === 200) {
-      getTodos();
-      setAlart("Deleted.");
-      setTimeout(() => {
-        setAlart("");
-      }, 1000);
-    } else {
-      console.log(data?.data);
-    }
+    confirmAlert({
+      title: "Alert!",
+      message: `Are you sure you want to delete?`,
+      buttons: [
+        {
+          label: "Confirm",
+          onClick: async () => {
+            const data = await axios.delete(`/api/${id}`);
+            if (data.status === 200) {
+              getTodos();
+              setAlart("Deleted.");
+              setTimeout(() => {
+                setAlart("");
+              }, 1000);
+            } else {
+              console.log(data?.data);
+            }
+          },
+        },
+        {
+          label: "Cancel",
+          onClick: () => {},
+        },
+      ],
+      closeOnEscape: false,
+      closeOnClickOutside: false,
+    });
   };
 
   const handleClear = () => {
@@ -100,13 +118,13 @@ function page() {
         {alert}
       </span>
       <form
-        className="bg-slate-300 pt-2 pb-6 shadow-sm px-4 mb-5"
+        className="bg-teal-400 pt-2 pb-6 shadow-sm px-4 mb-5"
         onSubmit={handlesaveTodos}
       >
         <h4 className="my-2">Experience new way to adding list in next-js.</h4>
         <div className="flex items-end flex-col justify-between">
           <textarea
-            rows={3}
+            rows={2}
             className={`${
               titleError ? "border-red-500" : "border-white"
             } flex-1 border-2 w-full mb-4 p-2 outline-none rounded-sm focus:border-green-500`}
@@ -126,9 +144,14 @@ function page() {
 
       {todos.map((o: any) => (
         <div key={o.id}>
-          <div className="bg-slate-50 p-2 mb-2 shadow-lg flex items-center justify-between">
-            <span className="text-capitalize block w-100 pl-4 py-4 pr-5">
-              <Link className="text-blue-500 capitalize hover:text-blue-700 border-1" href={`/${o.id}`}>{o.id}: {o.title}</Link>
+          <div className="bg-slate-50 p-1 mb-2 pr-4 shadow-lg flex items-center justify-between">
+            <span className="text-capitalize block w-100 px-4 py-2 p-5">
+              <Link
+                className="text-blue-500 capitalize hover:text-blue-700 border-1"
+                href={`/${o.id}`}
+              >
+                {o.id}: {o.title}
+              </Link>
             </span>
 
             <div className="inline-flex rounded-md shadow-sm" role="group">

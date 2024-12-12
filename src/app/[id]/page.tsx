@@ -1,7 +1,10 @@
 "use client";
 import axios from "axios";
+import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { MdDeleteOutline } from "react-icons/md";
+import { IoHomeOutline } from "react-icons/io5";
+import { confirmAlert } from "react-confirm-alert";
 
 export default function page({ params }: { params: { id: string } }) {
   const [todos, setTodos] = useState<any>([]);
@@ -32,20 +35,44 @@ export default function page({ params }: { params: { id: string } }) {
   }, [params]);
 
   const handleDelete = async (id: any) => {
-    const data = await axios.delete(`/api/${id}`);
-    if (data.status === 200) {
-      setAlart("Deleted.");
-      setTimeout(() => {
-        setAlart("");
-        location.replace("/");
-      }, 1000);
-    } else {
-      console.log(data?.data);
-    }
+    confirmAlert({
+      title: "Alert!",
+      message: `Are you sure you want to delete?`,
+      buttons: [
+        {
+          label: "Confirm",
+          onClick: async () => {
+            const data = await axios.delete(`/api/${id}`);
+            if (data.status === 200) {
+              setAlart("Deleted.");
+              setTimeout(() => {
+                setAlart("");
+                location.replace("/");
+              }, 1000);
+            } else {
+              console.log(data?.data);
+            }
+          },
+        },
+        {
+          label: "Cancel",
+          onClick: () => {},
+        },
+      ],
+      closeOnEscape: false,
+      closeOnClickOutside: false,
+    });
   };
 
   return (
     <div className="mx-auto w-full max-w-7xl lg:px-8">
+      <Link
+        className="p-2 mt-1 mb-4 bg-slate-100 w-10 shadow-sm hover:text-slate-700 rounded-sm justify-center text-black flex items-center"
+        title="Home"
+        href="/"
+      >
+        <IoHomeOutline />
+      </Link>
       <span
         className={
           alert === ""
@@ -55,8 +82,8 @@ export default function page({ params }: { params: { id: string } }) {
       >
         {alert}
       </span>
-      <div className="bg-slate-50 p-2 mb-2 shadow-lg flex items-center justify-between">
-            <span className="text-capitalize block w-100 pl-4 py-4 pr-5">
+      <div className="bg-slate-50 p-1 mb-2 pr-4 shadow-lg flex items-center justify-between">
+        <span className="text-capitalize block w-100 px-4 py-2 p-5">
           {load ? (
             "Loading..."
           ) : (
@@ -69,7 +96,7 @@ export default function page({ params }: { params: { id: string } }) {
           {!load && (
             <button
               type="button"
-              className="px-2 py-2 text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 rounded-e-sm"
+              className="px-2 py-2 text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 rounded-sm"
               onClick={() => handleDelete(todos[0]?.id)}
             >
               <MdDeleteOutline />
