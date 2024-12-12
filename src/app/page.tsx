@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { MdDeleteOutline } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { MdClear } from "react-icons/md";
+import Link from "next/link";
 function page() {
   const [todos, setTodos] = useState([]);
   const [todo, setTodo] = useState("");
@@ -15,10 +16,14 @@ function page() {
   const getTodos = async () => {
     try {
       const res = await axios("/api");
-      const data: any = await res.data;
-      setTodos(data);
+      if (res.status === 200) {
+        const data: any = await res.data;
+        setTodos(data);
+      } else {
+        console.log(res.data);
+      }
     } catch (e) {
-      console.error(e);
+      console.log(e);
     }
   };
 
@@ -99,12 +104,12 @@ function page() {
         onSubmit={handlesaveTodos}
       >
         <h4 className="my-2">Experience new way to adding list in next-js.</h4>
-        <div className="flex items-center justify-between">
-          <input
-            type="text"
+        <div className="flex items-end flex-col justify-between">
+          <textarea
+            rows={3}
             className={`${
-              titleError ? "border-red-700" : "border-white"
-            } flex-1 border-2 mr-2 p-2 outline-none rounded-sm focus:border-green-500`}
+              titleError ? "border-red-500" : "border-white"
+            } flex-1 border-2 w-full mb-4 p-2 outline-none rounded-sm focus:border-green-500`}
             name="title"
             value={todo}
             onChange={(event: any) => setTodo(event.target.value)}
@@ -122,8 +127,8 @@ function page() {
       {todos.map((o: any) => (
         <div key={o.id}>
           <div className="bg-slate-50 p-2 mb-2 shadow-lg flex items-center justify-between">
-            <span className="text-capitalize block w-100">
-              {o.id}: {o.title}
+            <span className="text-capitalize block w-100 pl-4 py-4 pr-5">
+              <Link className="text-blue-500 capitalize hover:text-blue-700 border-1" href={`/${o.id}`}>{o.id}: {o.title}</Link>
             </span>
 
             <div className="inline-flex rounded-md shadow-sm" role="group">

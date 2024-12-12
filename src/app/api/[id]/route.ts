@@ -31,3 +31,21 @@ export async function PUT(request: Request, { params }: { params: { id: any } })
     })
     return new NextResponse(JSON.stringify({ "id": id, "title": title }));
 }
+
+export async function POST(request: Request, { params }: { params: { id: any } }) {
+    const id = params.id;
+    try {
+        const results = await new Promise((resolve, reject) => {
+            db.all('SELECT * FROM todos where id=?', id, (err: Error, results: Response) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+        return NextResponse.json(results, { status: 200 });
+    } catch (error) {
+        return NextResponse.json(error, { status: 500 });
+    }
+}
