@@ -47,6 +47,10 @@ function page() {
       setTodoType("new");
       setTodo("");
       setEditTodo("");
+      setAlart(todoType === "update" ? "Updated." : "Added.");
+      setTimeout(() => {
+        setAlart("");
+      }, 1000);
       console.log(data?.data);
     } else {
       console.log(data?.data);
@@ -55,6 +59,7 @@ function page() {
 
   const handleEdit = async (item: any) => {
     setTodo(item.title);
+    setTitleError(false);
     setEditTodo(item.id);
     setTodoType("update");
   };
@@ -63,7 +68,10 @@ function page() {
     const data = await axios.delete(`/api/${id}`);
     if (data.status === 200) {
       getTodos();
-      console.log(data?.data);
+      setAlart("Deleted.");
+      setTimeout(() => {
+        setAlart("");
+      }, 1000);
     } else {
       console.log(data?.data);
     }
@@ -77,31 +85,43 @@ function page() {
 
   return (
     <div className="mx-auto w-full max-w-7xl lg:px-8">
+      <span
+        className={
+          alert === ""
+            ? "d-none"
+            : "fixed rounded-sm mx-auto flex w-40 justify-center inset-x-0 top-0 bg-green-50 px-1 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20"
+        }
+      >
+        {alert}
+      </span>
       <form
-        className="bg-slate-300 p-2 mb-1 flex items-center justify-between"
+        className="bg-slate-300 pt-2 pb-6 shadow-sm px-4 mb-5"
         onSubmit={handlesaveTodos}
       >
-        <input
-          type="text"
-          className={`${
-            titleError ? "border-red-700" : ""
-          } flex-1 border-2 mr-2 p-2 outline-none focus:border-green-500`}
-          name="title"
-          value={todo}
-          onChange={(event: any) => setTodo(event.target.value)}
-          placeholder="Enter todo"
-        />
-        <button
-          type="submit"
-          className="bg-red-400 p-2 border-radius-2 focus:ring-4 hover:bg-red-600"
-        >
-          {editTodo !== "" ? "Update Todo" : "Add Todo"}
-        </button>
+        <h4 className="my-2">Experience new way to adding list in next-js.</h4>
+        <div className="flex items-center justify-between">
+          <input
+            type="text"
+            className={`${
+              titleError ? "border-red-700" : "border-white"
+            } flex-1 border-2 mr-2 p-2 outline-none rounded-sm focus:border-green-500`}
+            name="title"
+            value={todo}
+            onChange={(event: any) => setTodo(event.target.value)}
+            placeholder="Enter todo"
+          />
+          <button
+            type="submit"
+            className="bg-slate-500 border-2 border-slate-500 text-white p-2 border-radius-2 focus:ring-2 hover:bg-slate-600 hover:border-slate-700 rounded-sm"
+          >
+            {editTodo !== "" ? "Update" : "Add"} Todo
+          </button>
+        </div>
       </form>
 
       {todos.map((o: any) => (
         <div key={o.id}>
-          <div className="bg-slate-300 p-2 mb-1 flex items-center justify-between">
+          <div className="bg-slate-50 p-2 mb-2 shadow-lg flex items-center justify-between">
             <span className="text-capitalize block w-100">
               {o.id}: {o.title}
             </span>
@@ -109,7 +129,7 @@ function page() {
             <div className="inline-flex rounded-md shadow-sm" role="group">
               <button
                 type="button"
-                className="px-2 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
+                className="px-2 py-2 text-gray-900 bg-white border border-r-0 border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 rounded-s-sm"
                 onClick={() =>
                   editTodo !== "" && editTodo === o.id
                     ? handleClear()
@@ -125,7 +145,7 @@ function page() {
 
               <button
                 type="button"
-                className="px-2 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
+                className="px-2 py-2 text-gray-900 bg-white border border-l-0 border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 rounded-e-sm"
                 onClick={() => handleDelete(o.id)}
               >
                 <MdDeleteOutline />
