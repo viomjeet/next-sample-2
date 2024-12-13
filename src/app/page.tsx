@@ -13,6 +13,7 @@ function page() {
   const [todoType, setTodoType] = useState("new");
   const [titleError, setTitleError] = useState(false);
   const [alert, setAlart] = useState("");
+  const [load, setLoad] = useState(true);
 
   const getTodos = async () => {
     try {
@@ -20,11 +21,14 @@ function page() {
       if (res.status === 200) {
         const data: any = await res.data;
         setTodos(data);
+        setLoad(false);
       } else {
         console.log(res.data);
+        setLoad(false);
       }
     } catch (e) {
       console.log(e);
+      setLoad(false);
     }
   };
 
@@ -121,7 +125,9 @@ function page() {
         className="bg-slate-100 pt-2 pb-6 shadow-sm px-4 mb-5"
         onSubmit={handlesaveTodos}
       >
-        <h4 className="my-2 text-slate-800 [text-shadow:_0_2px_2px_rgb(0_0_0_/_10%)]">Experience new way to adding list in next-js.</h4>
+        <h4 className="my-2 text-slate-800 [text-shadow:_0_2px_2px_rgb(0_0_0_/_10%)]">
+          Experience new way to adding list in next-js.
+        </h4>
         <div className="flex items-end flex-col justify-between">
           <textarea
             rows={2}
@@ -142,7 +148,9 @@ function page() {
         </div>
       </form>
 
-      {todos.map((o: any) => (
+      {load ? (
+            "Loading..."
+          ) : todos.map((o: any) => (
         <div key={o.id}>
           <div className="bg-slate-50 p-1 mb-2 pr-4 shadow-lg flex items-center justify-between">
             <span className="text-capitalize block w-100 px-4 py-2 p-5">
