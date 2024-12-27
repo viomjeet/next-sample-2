@@ -1,23 +1,13 @@
-import path from "path";
-import sqlite3 from "sqlite3";
+import db from '../../database'
 import { NextRequest, NextResponse } from "next/server";
 
-const dbPath = path.join(process.cwd(), "database.db");
-const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
-    if (err) {
-        return console.error(err.message);
-    }
-    console.log("Connected to the database.");
-});
-
-db.run(`CREATE TABLE IF NOT EXISTS todos (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL)`, (err) => {
-    console.error(err ? err.message : "Todos Table Createted")
-});
-
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
+    const reqUrl = await request.url
+    const { searchParams } = new URL(reqUrl)
+    let username = searchParams.get("username");
     try {
-        const results = await new Promise((resolve, reject) => {
-            db.all('SELECT * FROM todos', (err: Error, results: Response) => {
+        const results: any = await new Promise((resolve, reject) => {
+            db.all('SELECT fullname, useremail, username, status FROM users where status=? and username=?', 'active', username, (err: Error, results: Response) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -32,11 +22,15 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: NextRequest) {
-    const todo = await request.json();
-    const { title } = todo
-    const query = `insert into todos(title) values (?)`;
-    db.run(query, [title], (err: any) => {
-        return NextResponse.json({ error: err?.message });
-    })
-    return NextResponse.json({ success: "Data Inserted" });
+    const user = await request.json();
+    const { username } = user
+    try {
+        const query = `update users set status=? where username=?`;
+        db.run(query, ['inactive', username], (err: any) => {
+            return NextResponse.json({ error: err?.message }, { status: 409 });
+        })
+        return NextResponse.json("Logout successfully!", { status: 201 });
+    } catch (error) {
+        return NextResponse.json(error, { status: 500 });
+    }
 }

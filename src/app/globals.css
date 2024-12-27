@@ -9,6 +9,23 @@
   font-style: normal;
 }
 
+.Toastify{
+  font-size: 12px
+}
+.Toastify .Toastify__toast{
+  padding: 0px;
+  min-height: 50px;
+}
+.Toastify .Toastify__toast .Toastify__toast-icon{
+  border-radius: 0px;
+  width: 0px;
+  background: hsl(6, 78%, 57%);;
+}
+
+.Toastify .Toastify__toast .Toastify__toast-icon > svg{
+  display: none;
+}
+
 /** CSS for rect overlaymodal **/
 .react-confirm-alert-overlay {
     z-index: 1200;

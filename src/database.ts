@@ -1,0 +1,46 @@
+import path from "path";
+import sqlite3 from "sqlite3";
+const dbPath = path.join(process.cwd(), "database.db");
+const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
+    if (err) {
+        return console.error(err.message);
+    }
+    console.log("Connected to the database.");
+});
+
+db.run(`CREATE TABLE IF NOT EXISTS todos (
+id INTEGER PRIMARY KEY AUTOINCREMENT, 
+title TEXT NOT NULL,
+body TEXT NOT NULL,
+priority TEXT NOT NULL,
+createdDate TEXT NOT NULL,
+createdby TEXT NOT NULL
+)`, (err) => {
+    console.error(err ? err.message : "Todos Table Createted")
+});
+
+db.run(`CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, 
+    fullname TEXT NOT NULL,
+    useremail TEXT NOT NULL,
+    username TEXT NOT NULL,
+    status TEXT NOT NULL,
+    userpassword TEXT NOT NULL
+    )`, (err) => {
+    console.error(err ? err.message : "users Table Createted")
+});
+
+db.run(`CREATE TABLE IF NOT EXISTS usersData (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, 
+    username TEXT NOT NULL,
+    imgsrc TEXT NOT NULL,
+    friends TEXT NOT NULL
+    )`, (err) => {
+    console.error(err ? err.message : "usersData Table Createted")
+});
+
+// db.run('DROP TABLE IF EXISTS todos',(err)=>{
+//     console.error(err ? err.message : "todos deleted.")
+// })
+
+export default db;

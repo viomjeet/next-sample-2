@@ -1,16 +1,5 @@
-import path from "path";
-import sqlite3 from "sqlite3";
-
+import db from '../../../../../database'
 import { NextRequest, NextResponse } from "next/server";
-
-const dbPath = path.join(process.cwd(), "database.db");
-const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
-    if (err) {
-        return console.error(err.message);
-    }
-    console.log("Connected to the database.");
-});
-
 export async function DELETE(request: Request, { params }: { params: { id: any } }) {
     const id = params.id;
     const query = `delete from todos where id=?`;

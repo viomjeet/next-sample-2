@@ -4,6 +4,7 @@ import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { MdDeleteOutline } from "react-icons/md";
 import { IoHomeOutline } from "react-icons/io5";
+import { MdDashboard } from "react-icons/md";
 import { confirmAlert } from "react-confirm-alert";
 
 export default function page({ params }: { params: { id: string } }) {
@@ -15,7 +16,7 @@ export default function page({ params }: { params: { id: string } }) {
       const { id } = await params;
       const getTodos = async () => {
         try {
-          const res = await axios.post(`/api/${id}`);
+          const res = await axios.post(`/dashboard/todos/api/${id}`);
           if (res.status === 200) {
             const data: any = await res.data;
             setTodos(data);
@@ -42,7 +43,7 @@ export default function page({ params }: { params: { id: string } }) {
         {
           label: "Confirm",
           onClick: async () => {
-            const data = await axios.delete(`/api/${id}`);
+            const data = await axios.delete(`/dashboard/todos/api/${id}`);
             if (data.status === 200) {
               setAlart("Deleted.");
               setTimeout(() => {
@@ -66,13 +67,22 @@ export default function page({ params }: { params: { id: string } }) {
 
   return (
     <div className="mx-auto w-full max-w-7xl lg:px-8">
-      <Link
-        className="p-2 mt-1 mb-4 bg-slate-100 w-10 shadow-sm hover:text-slate-700 rounded-sm justify-center text-black flex items-center"
-        title="Home"
-        href="/"
-      >
-        <IoHomeOutline />
-      </Link>
+      <div className="inline-flex">
+        <Link
+          className="p-2 mt-1 mb-4 mr-2 bg-slate-100 w-10 shadow-sm hover:bg-slate-300 rounded-sm justify-center text-black flex items-center"
+          title="Home"
+          href="/"
+        >
+          <IoHomeOutline />
+        </Link>
+        <Link
+          className="p-2 mt-1 mb-4 bg-slate-100 w-10 shadow-sm hover:bg-slate-300 rounded-sm justify-center text-black flex items-center"
+          title="Home"
+          href="/dashboard/todos/"
+        >
+          <MdDashboard />
+        </Link>
+      </div>
       <span
         className={
           alert === ""
