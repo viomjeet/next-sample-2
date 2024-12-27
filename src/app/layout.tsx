@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import "./globals.css";
+import "./globals.scss";
+import "react-confirm-alert/src/react-confirm-alert.css";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

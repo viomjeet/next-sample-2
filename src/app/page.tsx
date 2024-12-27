@@ -4,21 +4,33 @@ import React, { useEffect, useState } from "react";
 import { MdDeleteOutline } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { MdClear } from "react-icons/md";
+import Link from "next/link";
+import { MdPlaylistAdd } from "react-icons/md";
+import { MdPlaylistAddCheck } from "react-icons/md";
+import { confirmAlert } from "react-confirm-alert";
+import { ToastContainer, toast } from "react-toastify";
 function page() {
   const [todos, setTodos] = useState([]);
   const [todo, setTodo] = useState("");
   const [editTodo, setEditTodo] = useState("");
   const [todoType, setTodoType] = useState("new");
   const [titleError, setTitleError] = useState(false);
-  const [alert, setAlart] = useState("");
+  const [load, setLoad] = useState(true);
 
   const getTodos = async () => {
     try {
       const res = await axios("/api");
-      const data: any = await res.data;
-      setTodos(data);
+      if (res.status === 200) {
+        const data: any = await res.data;
+        setTodos(data);
+        setLoad(false);
+      } else {
+        console.log(res.data);
+        setLoad(false);
+      }
     } catch (e) {
-      console.error(e);
+      console.log(e);
+      setLoad(false);
     }
   };
 
@@ -47,26 +59,44 @@ function page() {
       setTodoType("new");
       setTodo("");
       setEditTodo("");
-      console.log(data?.data);
+      toast.success(todoType === "update" ? "Updated." : "Added.");
     } else {
-      console.log(data?.data);
+      toast.error(data?.data);
     }
   };
 
   const handleEdit = async (item: any) => {
     setTodo(item.title);
+    setTitleError(false);
     setEditTodo(item.id);
     setTodoType("update");
   };
 
   const handleDelete = async (id: any) => {
-    const data = await axios.delete(`/api/${id}`);
-    if (data.status === 200) {
-      getTodos();
-      console.log(data?.data);
-    } else {
-      console.log(data?.data);
-    }
+    confirmAlert({
+      title: "Alert!",
+      message: `Are you sure you want to delete?`,
+      buttons: [
+        {
+          label: "Confirm",
+          onClick: async () => {
+            const data = await axios.delete(`/api/${id}`);
+            if (data.status === 200) {
+              getTodos();
+              toast.success("Deleted successfully!");
+            } else {
+              toast.error(data?.data);
+            }
+          },
+        },
+        {
+          label: "Cancel",
+          onClick: () => {},
+        },
+      ],
+      closeOnEscape: false,
+      closeOnClickOutside: false,
+    });
   };
 
   const handleClear = () => {
@@ -77,63 +107,90 @@ function page() {
 
   return (
     <div className="mx-auto w-full max-w-7xl lg:px-8">
+      <ToastContainer
+        position="bottom-right"
+        autoClose={1500}
+      />
       <form
-        className="bg-slate-300 p-2 mb-1 flex items-center justify-between"
+        className="bg-slate-100 pt-2 pb-6 shadow-sm px-4 mb-5"
         onSubmit={handlesaveTodos}
       >
-        <input
-          type="text"
-          className={`${
-            titleError ? "border-red-700" : ""
-          } flex-1 border-2 mr-2 p-2 outline-none focus:border-green-500`}
-          name="title"
-          value={todo}
-          onChange={(event: any) => setTodo(event.target.value)}
-          placeholder="Enter todo"
-        />
-        <button
-          type="submit"
-          className="bg-red-400 p-2 border-radius-2 focus:ring-4 hover:bg-red-600"
-        >
-          {editTodo !== "" ? "Update Todo" : "Add Todo"}
-        </button>
-      </form>
-
-      {todos.map((o: any) => (
-        <div key={o.id}>
-          <div className="bg-slate-300 p-2 mb-1 flex items-center justify-between">
-            <span className="text-capitalize block w-100">
-              {o.id}: {o.title}
-            </span>
-
-            <div className="inline-flex rounded-md shadow-sm" role="group">
+        <h4 className="my-2 text-slate-800 [text-shadow:_0_2px_2px_rgb(0_0_0_/_10%)]">
+          Experience new way to adding list in next-js.
+        </h4>
+        <div className="flex items-end flex-col justify-between">
+          <textarea
+            rows={2}
+            className={`${
+              titleError ? "border-red-500" : "border-white"
+            } flex-1 border-2 w-full mb-4 p-2 outline-none shadow-lg rounded-sm focus:border-green-500`}
+            name="title"
+            value={todo}
+            onChange={(event: any) => setTodo(event.target.value)}
+            placeholder="Enter todo"
+          />
+          <div className="inline-flex rounded-md shadow-sm" role="group">
+            <button
+              type="submit"
+              title={`${editTodo === "" ? "Add" : "Update"} Todos`}
+              className="px-2 py-2 text-gray-900 bg-white border mr-1 disabled:opacity-5 border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 rounded-sm"
+            >
+              {editTodo !== "" ? (
+                <MdPlaylistAddCheck className="text-2xl" />
+              ) : (
+                <MdPlaylistAdd className="text-2xl" />
+              )}
+            </button>
+            {editTodo !== "" && (
               <button
                 type="button"
-                className="px-2 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
-                onClick={() =>
-                  editTodo !== "" && editTodo === o.id
-                    ? handleClear()
-                    : handleEdit(o)
-                }
+                title="Discard"
+                onClick={handleClear}
+                className="px-2 py-2 text-gray-900 bg-white border disabled:opacity-5 border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 rounded-sm"
               >
-                {editTodo !== "" && editTodo === o.id ? (
-                  <MdClear />
-                ) : (
-                  <CiEdit />
-                )}
+                <MdClear className="text-2xl" />
               </button>
-
-              <button
-                type="button"
-                className="px-2 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
-                onClick={() => handleDelete(o.id)}
-              >
-                <MdDeleteOutline />
-              </button>
-            </div>
+            )}
           </div>
         </div>
-      ))}
+      </form>
+
+      {load
+        ? "Loading..."
+        : todos.map((o: any) => (
+            <div key={o.id}>
+              <div className="bg-slate-50 p-1 mb-2 pr-4 shadow-lg flex items-center justify-between">
+                <span className="text-capitalize block w-100 px-4 py-2 p-5">
+                  <Link
+                    className="text-blue-500 capitalize hover:text-blue-700 border-1"
+                    href={`/${o.id}`}
+                  >
+                    {o.id}: {o.title}
+                  </Link>
+                </span>
+
+                <div className="inline-flex rounded-md shadow-sm" role="group">
+                  <button
+                    type="button"
+                    disabled={editTodo !== "" && editTodo === o.id}
+                    className="px-2 py-2 text-gray-900 bg-white border border-r-0 disabled:opacity-5 border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 rounded-s-sm"
+                    onClick={() => handleEdit(o)}
+                  >
+                    <CiEdit />
+                  </button>
+
+                  <button
+                    type="button"
+                    disabled={editTodo !== "" && editTodo === o.id}
+                    className="px-2 py-2 text-gray-900 bg-white border border-l-0 disabled:opacity-5 border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 rounded-e-sm"
+                    onClick={() => handleDelete(o.id)}
+                  >
+                    <MdDeleteOutline />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
     </div>
   );
 }
