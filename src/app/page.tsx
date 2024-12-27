@@ -8,7 +8,6 @@ function page() {
   const router = useRouter();
   useEffect(() => {
     let activeUser = localStorage.getItem("user");
-    console.log(activeUser);
     if (activeUser !== null) {
       setActiveUser([]);
       const getActiveUser = async () => {

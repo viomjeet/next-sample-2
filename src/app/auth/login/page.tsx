@@ -28,7 +28,7 @@ function page() {
             useremail.value = "";
             userpassword.value = "";
             setTimeout(() => {
-              window.location.href = "/";
+              window.location.href = "/dashboard";
             }, 10);
             localStorage.setItem("user", response.data);
           }

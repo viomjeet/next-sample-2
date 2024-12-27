@@ -61,6 +61,7 @@ function page() {
     // </div>
 
     <div className="flex h-screen bg-gray-200">
+      <ToastContainer position="bottom-right" autoClose={1500} />
       <div className="fixed inset-0 z-20 transition-opacity bg-black opacity-50 lg:hidden"></div>
 
       <div className="fixed inset-y-0 left-0 z-30 w-64 overflow-y-auto transition duration-300 transform bg-gray-900 lg:translate-x-0 lg:static lg:inset-0">
@@ -188,7 +189,7 @@ function page() {
           </a>
         </nav>
       </div>
-      
+
 
       <div className="flex flex-col flex-1 overflow-hidden">
         <header className="flex items-center justify-between px-6 py-4 bg-white border-b-4 border-indigo-600">
@@ -305,7 +306,7 @@ function page() {
                   <form action="#" method="POST">
                     <MenuItem>
                       <button
-                        type="submit"
+                        onClick={handleLogout}
                         className="block w-full px-4 py-2 text-left text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
                       >
                         Sign out
