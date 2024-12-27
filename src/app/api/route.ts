@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
         db.run(query, ['inactive', username], (err: any) => {
             return NextResponse.json({ error: err?.message }, { status: 409 });
         })
-        return NextResponse.json("Logout successfully!", { status: 201 });
+        return NextResponse.json("Logout successfully!", { status: 200 });
     } catch (error) {
         return NextResponse.json(error, { status: 500 });
     }
