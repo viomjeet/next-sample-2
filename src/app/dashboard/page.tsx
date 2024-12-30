@@ -7,8 +7,12 @@ import { GrGroup } from "react-icons/gr";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { HiOutlineBell } from "react-icons/hi2";
+import { MdOutlineLogout } from "react-icons/md";
+
+import TodoComponent from "./todos/page";
+
 function page() {
-  let [activeUser, setActiveUser] = useState([]);
+  let [activeUser, setActiveUser] = useState<any>([]);
   const router = useRouter();
   useEffect(() => {
     let activeUser = localStorage.getItem("user");
@@ -28,7 +32,7 @@ function page() {
       };
       getActiveUser();
     } else {
-      router.push("/auth/login");
+      location.replace("/auth/login");
     }
   }, []);
 
@@ -41,9 +45,11 @@ function page() {
       try {
         const res = await axios.post(`/api`, request);
         if (res.status === 200) {
-          toast.success(request.data);
-          localStorage.removeItem("user");
-          location.reload();
+          toast.success(res.data);
+          setTimeout(() => {
+            localStorage.removeItem("user");
+            location.reload();
+          }, 500);
         }
       } catch (e: any) {
         toast.error(e?.message);
@@ -190,7 +196,6 @@ function page() {
         </nav>
       </div>
 
-
       <div className="flex flex-col flex-1 overflow-hidden">
         <header className="flex items-center justify-between px-6 py-4 bg-white border-b-4 border-indigo-600">
           <div className="flex items-center">
@@ -227,7 +232,7 @@ function page() {
             <Menu as="div" className="relative inline-block text-left">
               <div>
                 <MenuButton className="flex mx-4 text-gray-600 focus:outline-none">
-                <HiOutlineBell className="text-2xl" />
+                  <HiOutlineBell className="text-2xl" />
                 </MenuButton>
               </div>
 
@@ -237,42 +242,47 @@ function page() {
               >
                 <div className="py-1">
                   <MenuItem>
-                  <a
-                  href="#"
-                  className="flex items-centerpx-4 py-4 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
-                >
-                  <img
-                    className="object-cover w-8 h-8 mx-1 rounded-full"
-                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=334&amp;q=80"
-                    alt="avatar"
-                  />
-                  <p className="mx-2 text-sm">
-                    <span className="font-bold">Sara Salah</span> replied on the{" "}
-                    <span className="font-bold text-indigo-400">
-                      Upload Image
-                    </span>{" "}
-                    artical . 2m
-                  </p>
-                </a>
+                    <a
+                      href="#"
+                      className="flex items-centerpx-4 py-4 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
+                    >
+                      <img
+                        className="object-cover w-8 h-8 mx-1 rounded-full"
+                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=334&amp;q=80"
+                        alt="avatar"
+                      />
+                      <p className="mx-2 text-sm">
+                        <span className="font-bold">Sara Salah</span> replied on
+                        the{" "}
+                        <span className="font-bold text-indigo-400">
+                          Upload Image
+                        </span>{" "}
+                        artical . 2m
+                      </p>
+                    </a>
                   </MenuItem>
-                  
                 </div>
               </MenuItems>
             </Menu>
             <Menu as="div" className="relative inline-block text-left">
-              <div>
-                <MenuButton className="relative block w-8 h-8 overflow-hidden rounded-full shadow focus:outline-none">
-                <img
-                  className="object-cover w-full h-full"
-                  src="https://images.unsplash.com/photo-1528892952291-009c663ce843?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=296&amp;q=80"
-                  alt="Your avatar"
-                />
-                  <ChevronDownIcon
-                    aria-hidden="true"
-                    className="-mr-1 size-5 text-gray-400"
-                  />
-                </MenuButton>
-              </div>
+              {activeUser.length > 0 && (
+                <div className="flex justify-center items-center">
+                  <span className="uppercase mr-2">
+                    Hi, {activeUser[0]?.fullname.split(" ")[0]}
+                  </span>
+                  <MenuButton className="relative block w-8 h-8 overflow-hidden rounded-full shadow focus:outline-none">
+                    <img
+                      className="object-cover w-full h-full"
+                      src="https://images.unsplash.com/photo-1528892952291-009c663ce843?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=296&amp;q=80"
+                      alt="Your avatar"
+                    />
+                    <ChevronDownIcon
+                      aria-hidden="true"
+                      className="-mr-1 size-5 text-gray-400"
+                    />
+                  </MenuButton>
+                </div>
+              )}
 
               <MenuItems
                 transition
@@ -306,10 +316,12 @@ function page() {
                   <form action="#" method="POST">
                     <MenuItem>
                       <button
+                        className="flex justify-start items-center w-full px-4 py-2 text-left text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
+                        title="Logout"
                         onClick={handleLogout}
-                        className="block w-full px-4 py-2 text-left text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
                       >
-                        Sign out
+                        <MdOutlineLogout className="mr-1 text-xl" />
+                        Logout
                       </button>
                     </MenuItem>
                   </form>
@@ -344,7 +356,7 @@ function page() {
             <div className="mt-8"></div>
 
             <div className="flex flex-col mt-8">
-              <div className="py-2 -my-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+              <div className="py-2 mb-12 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
                 <div className="inline-block min-w-full overflow-hidden align-middle border-b border-gray-200 shadow sm:rounded-lg">
                   <table className="min-w-full">
                     <thead>
@@ -419,7 +431,12 @@ function page() {
                     </tbody>
                   </table>
                 </div>
+
+                
               </div>
+              <hr />
+
+                <TodoComponent />
             </div>
           </div>
         </main>

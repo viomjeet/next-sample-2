@@ -8,17 +8,16 @@ export async function DELETE(request: Request, { params }: { params: { id: any }
     })
     return new NextResponse("Deleted");
 }
+
 export async function PUT(request: Request, { params }: { params: { id: any } }) {
     const id = params.id;
     const todo = await request.json();
-    const { title } = todo
-    const query = `update todos set title=? where id=?`;
-    db.run(query, [title, id], (err: any) => {
-        if (err) {
-            return new NextResponse(err?.message);
-        }
+    const { title, body, priority, status, createdDate, createdby, todosrc } = todo
+    const query = `update todos set title=?, body=?, priority=?, status=?, createdDate=?, createdby=?, todosrc=? where id=?`;
+    db.run(query, [title, body, priority, status, createdDate, createdby, todosrc, id], (err: any) => {
+        return NextResponse.json({ error: err?.message }, { status: 409 });
     })
-    return new NextResponse(JSON.stringify({ "id": id, "title": title }));
+    return NextResponse.json("Todo updated successfully!", { status: 200 });
 }
 
 export async function POST(request: Request, { params }: { params: { id: any } }) {
