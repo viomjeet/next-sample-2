@@ -21,31 +21,31 @@ function page() {
       axios
         .post(`/auth/login/api`, request)
         .then((response) => {
-          console.log(response)
-          if (response.data.includes("Invalid")) {
-            toast.error(response.data);
-          } else {
-            useremail.value = "";
-            userpassword.value = "";
-            setTimeout(() => {
-              window.location.href = "/";
-            }, 10);
-            localStorage.setItem("user", response.data);
-          }
-          setLoading(false);
+          useremail.value = "";
+          userpassword.value = "";
+          toast.success('Login successfully!');
+          setTimeout(() => {
+            window.location.href = "/dashboard";
+            setLoading(false);
+          }, 500);
+          localStorage.setItem("user", response.data);
         })
         .catch((err) => {
-          toast.error(err?.message);
+          if (err?.response?.data.includes("Invalid")) {
+            toast.error(err?.response?.data);
+          } else {
+            toast.error(err?.message);            
+          }
           setLoading(false);
         });
     }
   };
 
   useEffect(() => {
-      if (localStorage.getItem("user") !== null) {
-          location.replace('/');
-      }
-  })
+    if (localStorage.getItem("user") !== null) {
+      location.replace("/");
+    }
+  });
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 flex justify-center">
       <ToastContainer position="bottom-right" autoClose={1500} />

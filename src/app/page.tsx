@@ -3,12 +3,13 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { MdOutlineLogout } from "react-icons/md";
+import Link from "next/link";
 function page() {
-  let [activeUser, setActiveUser] = useState([]);
+  let [activeUser, setActiveUser] = useState<any>([]);
   const router = useRouter();
   useEffect(() => {
     let activeUser = localStorage.getItem("user");
-    console.log(activeUser);
     if (activeUser !== null) {
       setActiveUser([]);
       const getActiveUser = async () => {
@@ -24,7 +25,7 @@ function page() {
       };
       getActiveUser();
     } else {
-      router.push("/auth/login");
+      location.href = "/auth/login";
     }
   }, []);
 
@@ -37,7 +38,7 @@ function page() {
       try {
         const res = await axios.post(`/api`, request);
         if (res.status === 200) {
-          toast.success(request.data);
+          toast.success(res.data);
           localStorage.removeItem("user");
           location.reload();
         }
@@ -50,10 +51,26 @@ function page() {
   return (
     <div className="mx-auto w-full max-w-7xl lg:px-8">
       <ToastContainer position="bottom-right" autoClose={1500} />
-      <div>
-        <code>{JSON.stringify(activeUser)}</code>
-      </div>
-      <button onClick={handleLogout}>Logout</button>
+      {activeUser.length > 0 && (
+        <div className="flex justify-between">
+          <code>{JSON.stringify(activeUser)}</code>
+          <div className="flex items-center">
+            <Link className="mr-2" href="/dashboard">
+              Dashboard
+            </Link>
+            <span className="uppercase mr-2">
+              Hi, {activeUser[0]?.fullname.split(" ")[0]}
+            </span>{" "}
+            <button
+              className="flex items-center"
+              title="Logout"
+              onClick={handleLogout}
+            >
+              <MdOutlineLogout className="text-xl" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -9,12 +9,14 @@ const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CR
 });
 
 db.run(`CREATE TABLE IF NOT EXISTS todos (
-id INTEGER PRIMARY KEY AUTOINCREMENT, 
-title TEXT NOT NULL,
-body TEXT NOT NULL,
-priority TEXT NOT NULL,
-createdDate TEXT NOT NULL,
-createdby TEXT NOT NULL
+    id INTEGER PRIMARY KEY AUTOINCREMENT, 
+    title TEXT NOT NULL,
+    body TEXT NOT NULL,
+    priority TEXT NOT NULL,
+    status TEXT NOT NULL,
+    createdDate TEXT NOT NULL,
+    createdby TEXT NOT NULL,
+    todosrc TEXT NOT NULL
 )`, (err) => {
     console.error(err ? err.message : "Todos Table Createted")
 });

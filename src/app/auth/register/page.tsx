@@ -44,8 +44,12 @@ function page() {
           }
         })
         .catch((err) => {
+          if (err?.response?.data.includes("Invalid")) {
+            toast.error(err?.response?.data);
+          } else {
+            toast.error(err?.message);
+          }
           setLoading(false);
-          toast.error(err?.response?.data);
         });
     }
   };
