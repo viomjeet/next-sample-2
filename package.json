@@ -11,8 +11,10 @@
   "dependencies": {
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
+    "@types/formidable": "^3.4.5",
     "axios": "^1.7.9",
-    "next": "15.0.4",
+    "formidable": "^3.5.2",
+    "next": "^15.1.1-canary.23",
     "react": "^19.0.0",
     "react-confirm-alert": "^3.0.6",
     "react-dom": "^19.0.0",
