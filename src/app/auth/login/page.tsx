@@ -1,7 +1,7 @@
 "use client";
 import axios from "axios";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { MdOutlineLogin } from "react-icons/md";
 import { ToastContainer, toast } from "react-toastify";
 function page() {
@@ -23,29 +23,21 @@ function page() {
         .then((response) => {
           useremail.value = "";
           userpassword.value = "";
-          toast.success('Login successfully!');
-          setTimeout(() => {
-            window.location.href = "/dashboard";
-            setLoading(false);
-          }, 500);
+          toast.success("Login successfully!");
+          location.replace("/dashboard");
+          setLoading(false);
           localStorage.setItem("user", response.data);
         })
         .catch((err) => {
           if (err?.response?.data.includes("Invalid")) {
             toast.error(err?.response?.data);
           } else {
-            toast.error(err?.message);            
+            toast.error(err?.message);
           }
           setLoading(false);
         });
     }
   };
-
-  useEffect(() => {
-    if (localStorage.getItem("user") !== null) {
-      location.replace("/");
-    }
-  });
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 flex justify-center">
       <ToastContainer position="bottom-right" autoClose={1500} />
