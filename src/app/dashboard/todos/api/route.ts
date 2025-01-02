@@ -23,20 +23,20 @@ export async function GET(request: Request) {
 
 export async function POST(request: NextRequest) {
     const todo = await request.json();
-    const { title, body, priority, status, createdDate, createdby, todosrc } = todo
-    const query = `insert into todos(title, body, priority, status, createdDate, createdby, todosrc) values(?,?,?,?,?,?,?)`;
-    db.run(query, [title, body, priority, status, createdDate, createdby, todosrc], (err: any) => {
+    const { title, body, priority, status, createdDate, createdby, todosrc, updatedDate, edited } = todo
+    const query = `insert into todos(title, body, priority, status, createdDate, createdby, todosrc, updatedDate, edited) values(?,?,?,?,?,?,?,?,?)`;
+    db.run(query, [title, body, priority, status, createdDate, createdby, todosrc, updatedDate, edited], (err: any) => {
         return NextResponse.json({ error: err?.message }, { status: 409 });
     })
     return NextResponse.json("Todo added successfully!", { status: 200 });
 }
 
 export async function PUT(request: Request, { params }: { params: { id: any } }) {
-    const id = params.id;
+    const { id } = await params;
     const todo = await request.json();
-    const { title, body, priority, status, createdDate, createdby, todosrc } = todo
-    const query = `update todos set title=?, body=?, priority=?, status=?, createdDate=?, createdby=?, todosrc=? where id=?`;
-    db.run(query, [title, body, priority, status, createdDate, createdby, todosrc, id], (err: any) => {
+    const { title, body, priority, status, createdDate, createdby, todosrc, updatedDate, edited } = todo
+    const query = `update todos set title=?, body=?, priority=?, status=?, createdDate=?, createdby=?, todosrc=?, updatedDate=?, edited=? where id=?`;
+    db.run(query, [title, body, priority, status, createdDate, createdby, todosrc, updatedDate, edited, id], (err: any) => {
         return NextResponse.json({ error: err?.message }, { status: 409 });
     })
     return NextResponse.json("Todo updated successfully!", { status: 200 });
