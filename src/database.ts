@@ -5,7 +5,10 @@ const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CR
     if (err) {
         return console.error(err.message);
     }
-    console.log("Connected to the database.");
+    db.run('update todos set edited=1 where id=20',(err)=>{
+        console.error(err ? err.message : "updatedDate added.")
+    })
+    console.log("sqlite3 Connected.");
 });
 
 db.run(`CREATE TABLE IF NOT EXISTS todos (
@@ -16,7 +19,9 @@ db.run(`CREATE TABLE IF NOT EXISTS todos (
     status TEXT NOT NULL,
     createdDate TEXT NOT NULL,
     createdby TEXT NOT NULL,
-    todosrc TEXT NOT NULL
+    todosrc TEXT NOT NULL,
+    updatedDate TEXT NOT NULL,
+    edited INT 
 )`, (err) => {
     console.error(err ? err.message : "Todos Table Createted")
 });
@@ -44,5 +49,8 @@ db.run(`CREATE TABLE IF NOT EXISTS usersData (
 // db.run('DROP TABLE IF EXISTS todos',(err)=>{
 //     console.error(err ? err.message : "todos deleted.")
 // })
+
+
+
 
 export default db;

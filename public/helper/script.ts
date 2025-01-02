@@ -1,7 +1,14 @@
+'use client'
 import axios from "axios";
 import { toast } from "react-toastify";
+// import { useRouter } from "next/navigation";
 
-let activeUser = localStorage.getItem("user") || {};
+
+let activeUser: any = {}
+console.log(typeof window);
+if (typeof window !== 'undefined') {
+  activeUser = localStorage.getItem("user") || {};
+}
 export class Helper {
   public static logout = () => {
     if (Object.keys(activeUser).length !== 0) {
@@ -22,6 +29,7 @@ export class Helper {
 
   public static isLoginUser = () => {
     if (Object.keys(activeUser).length === 0) {
+      // const router = useRouter()
       location.replace("/auth/login");
     }
   }

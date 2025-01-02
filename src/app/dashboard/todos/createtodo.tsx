@@ -1,14 +1,13 @@
 "use client";
 import axios from "axios";
 import React, { useState } from "react";
-import { MdClear } from "react-icons/md";
 import { MdPlaylistAdd } from "react-icons/md";
 import { MdPlaylistAddCheck } from "react-icons/md";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
-function page() {
+function CreateTodo(props: any) {
   const priorityList = [
     { id: 1, value: "High" },
     { id: 2, value: "Medium" },
@@ -34,7 +33,10 @@ function page() {
     todosrc: "",
   };
 
-  const [Todos, setTodos] = useState<any>(blankTodo);
+  const [Todos, setTodos] = useState<any>(
+    props?.isEdit ? props?.editTodo : blankTodo
+  );
+  const [saveLoading, setSetLoading] = useState<any>(false);
 
   const handleCreateTodo = async (event: any) => {
     event.preventDefault();
@@ -52,38 +54,52 @@ function page() {
     if (Todos.title.length < 3 || Todos.body.length < 10) {
       toast.error("Fields can't be blank.");
     } else {
+      setSetLoading(true);
       let activeUser = localStorage.getItem("user");
       let request = {
         title: Todos.title,
         body: Todos.body,
         priority: Todos.priority,
         status: Todos.status,
-        createdDate: new Date().toISOString(),
+        createdDate: props?.isEdit? Todos.createdDate: new Date().toISOString(),
         createdby: activeUser !== null ? activeUser : "",
         todosrc: "",
+        updatedDate: props?.isEdit ? new Date().toISOString() : Todos.updatedDate,
+        edited: props?.isEdit ? 1 : 0,
       };
       try {
+        debugger;
         let data: any;
-        // if (editTodo.isEdit) {
-        //   data = await axios.put(
-        //     `/dashboard/todos/api/${editTodo.isId}`,
-        //     request
-        //   );
-        // } else {
-        data = await axios.post("/dashboard/todos/api", request);
-        // }
+        if (props?.isEdit) {
+          data = await axios.put(`/dashboard/todos/api/${props?.isEditId}`, request);
+        } else {
+          data = await axios.post("/dashboard/todos/api", request);
+        }
         if (data.status === 200) {
           toast.success(data?.data);
           setTodos(blankTodo);
-          // setEditTodo({ isEdit: false, isId: "" });
-          // getTodos();
+          if (props?.isEdit) {
+            props?.discard();
+          }
+          props.loadData();
+          props.close();
+          setSetLoading(false);
         } else {
           toast.error(data?.data);
+          setSetLoading(false);
         }
       } catch (e: any) {
+        setSetLoading(false);
         toast.error(e?.message);
       }
     }
+  };
+
+  const handleCancel = () => {
+    if (props?.isEdit) {
+      props?.discard();
+    }
+    props.close();
   };
 
   const handleUpdateTodos = (e: any, type: any) => {
@@ -103,7 +119,6 @@ function page() {
 
   return (
     <div className="">
-      <ToastContainer position="bottom-right" autoClose={1500} />
       <form onSubmit={handleCreateTodo}>
         <input
           className={`${
@@ -118,7 +133,7 @@ function page() {
           placeholder="Todo Title"
         />
         <textarea
-          rows={2}
+          rows={4}
           className={`${
             Todos.bodyError
               ? "border-red-600 placeholder:text-red-500"
@@ -200,33 +215,32 @@ function page() {
           <button
             title="Add Todo"
             type="submit"
+            disabled={saveLoading}
             className="flex py-2 px-2 w-full justify-center items-center gap-x-2 text-sm font-semibold rounded-sm border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
           >
-            {/* {editTodo.isEdit ? (
-                  <>
-                    Update Todo <MdPlaylistAddCheck className="text-2xl" />
-                  </>
-                ) : (
-                  <>
-                    Add Todo <MdPlaylistAdd className="text-2xl" />
-                  </>
-                )} */}
-            Add Todo <MdPlaylistAdd className="text-2xl" />
+            {props?.isEditId ? (
+              <>
+                Update Todo <MdPlaylistAddCheck className="text-2xl" />
+              </>
+            ) : (
+              <>
+                Add Todo <MdPlaylistAdd className="text-2xl" />
+              </>
+            )}
           </button>
-          {/* {editTodo.isEdit && (
-                <button
-                  title="Discard"
-                  type="submit"
-                  onClick={handleDiscardTodo}
-                  className="flex py-2 px-2 w-20 ml-2 justify-center items-center gap-x-2 text-sm font-semibold rounded-sm border border-transparent bg-orange-600 text-white hover:bg-orange-700 focus:outline-none focus:bg-orange-700 disabled:opacity-50 disabled:pointer-events-none"
-                >
-                  <MdClear className="text-2xl" />
-                </button>
-              )} */}
+          <button
+            title="Close"
+            type="submit"
+            onClick={handleCancel}
+            className="flex py-2 px-2 w-20 ml-2 justify-center items-center gap-x-2 text-sm font-semibold rounded-sm border border-transparent bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:bg-red-700 disabled:opacity-50 disabled:pointer-events-none"
+          >
+            Close
+            {/* <MdClear className="text-2xl" /> */}
+          </button>
         </div>
       </form>
     </div>
   );
 }
 
-export default page;
+export default CreateTodo;

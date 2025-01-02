@@ -4,7 +4,9 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { MdOutlineLogin } from "react-icons/md";
 import { ToastContainer, toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 function page() {
+  const router = useRouter()
   const [loading, setLoading] = useState(false);
   const handleLoginUser = (event: any) => {
     event.preventDefault();
@@ -24,7 +26,7 @@ function page() {
           useremail.value = "";
           userpassword.value = "";
           toast.success("Login successfully!");
-          location.replace("/dashboard");
+          router.push("/dashboard");
           setLoading(false);
           localStorage.setItem("user", response.data);
         })
