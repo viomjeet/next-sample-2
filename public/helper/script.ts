@@ -9,13 +9,14 @@ console.log(typeof window);
 if (typeof window !== 'undefined') {
   activeUser = localStorage.getItem("user") || {};
 }
-export class Helper {
+export class Helper {  
   public static logout = () => {
+    debugger;
     if (Object.keys(activeUser).length !== 0) {
       axios
         .post(`/api`, { username: activeUser })
         .then((res: any) => {
-          if (res.status === 200) {
+          if (res?.status === 200) {
             toast.success(res.data);
             localStorage.removeItem("user");
             location.reload();

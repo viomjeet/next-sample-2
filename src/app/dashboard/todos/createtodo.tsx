@@ -61,29 +61,39 @@ function CreateTodo(props: any) {
         body: Todos.body,
         priority: Todos.priority,
         status: Todos.status,
-        createdDate: props?.isEdit? Todos.createdDate: new Date().toISOString(),
+        createdDate: props?.isEdit
+          ? Todos.createdDate
+          : new Date().toISOString(),
         createdby: activeUser !== null ? activeUser : "",
         todosrc: "",
-        updatedDate: props?.isEdit ? new Date().toISOString() : Todos.updatedDate,
+        updatedDate: props?.isEdit
+          ? new Date().toISOString()
+          : Todos.updatedDate,
         edited: props?.isEdit ? 1 : 0,
       };
       try {
         debugger;
         let data: any;
         if (props?.isEdit) {
-          data = await axios.put(`/dashboard/todos/api/${props?.isEditId}`, request);
+          data = await axios.put(
+            `/dashboard/todos/api/${props?.isEditId}`,
+            request
+          );
         } else {
           data = await axios.post("/dashboard/todos/api", request);
         }
         if (data.status === 200) {
           toast.success(data?.data);
-          setTodos(blankTodo);
-          if (props?.isEdit) {
-            props?.discard();
-          }
-          props.loadData();
-          props.close();
-          setSetLoading(false);
+          setTimeout(() => {
+            setTodos(blankTodo);
+            if (props?.isEdit) {
+              props?.discard();
+            }
+            props.loadData();
+
+            props.close();
+            setSetLoading(false);
+          }, 1000);
         } else {
           toast.error(data?.data);
           setSetLoading(false);

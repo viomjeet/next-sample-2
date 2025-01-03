@@ -1,3 +1,4 @@
+'use client'
 import React, { useState, useEffect } from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { HiOutlineBell } from "react-icons/hi2";
@@ -5,6 +6,7 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { MdOutlineLogout } from "react-icons/md";
 import { Helper } from "../../../public/helper/script";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 function Header() {
   let [activeUser, setActiveUser] = useState<any>([]);
@@ -116,12 +118,12 @@ function Header() {
           >
             <div className="py-1">
               <MenuItem>
-                <a
-                  href="#"
+                <Link
+                  href="/dashboard/profile"
                   className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
                 >
                   Profile
-                </a>
+                </Link>
               </MenuItem>
               <form action="#" method="POST">
                 <MenuItem>
