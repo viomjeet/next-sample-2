@@ -6,7 +6,7 @@ import { MdOutlineLogin } from "react-icons/md";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 function page() {
-  const router = useRouter()
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const handleLoginUser = (event: any) => {
     event.preventDefault();
@@ -27,9 +27,13 @@ function page() {
           useremail.value = "";
           userpassword.value = "";
           toast.success("Login successfully!");
-          router.push("/dashboard");
           setLoading(false);
-          localStorage.setItem("user", response.data);
+          setTimeout(() => {
+            if (typeof window !== "undefined") {
+              location.replace("/dashboard");
+              localStorage.setItem("user", response.data);
+            }
+          }, 50);
         })
         .catch((err) => {
           if (err?.response?.data.includes("Invalid")) {

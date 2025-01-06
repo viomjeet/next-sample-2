@@ -55,7 +55,7 @@ function CreateTodo(props: any) {
       toast.error("Fields can't be blank.");
     } else {
       setSetLoading(true);
-      let activeUser = localStorage.getItem("user");
+      let activeUser = window?.localStorage.getItem("user");
       let request = {
         title: Todos.title,
         body: Todos.body,
@@ -242,7 +242,7 @@ function CreateTodo(props: any) {
             title="Close"
             type="submit"
             onClick={handleCancel}
-            className="flex py-2 px-2 w-20 ml-2 justify-center items-center gap-x-2 text-sm font-semibold rounded-sm border border-transparent bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:bg-red-700 disabled:opacity-50 disabled:pointer-events-none"
+            className="flex py-2 px-2 w-20 ml-2 justify-center items-center gap-x-2 text-sm font-semibold rounded-sm border border-transparent bg-slate-100 hover:bg-slate-300 focus:outline-none focus:bg-slate-400 disabled:opacity-50 disabled:pointer-events-none"
           >
             Close
             {/* <MdClear className="text-2xl" /> */}

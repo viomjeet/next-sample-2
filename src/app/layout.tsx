@@ -4,7 +4,6 @@ import "./globals.scss";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Navbar from "./Header/Navbar";
 import Header from "./Header/Header";
-import { GrGroup } from "react-icons/gr";
 import React from "react";
 
 const geistSans = localFont({
