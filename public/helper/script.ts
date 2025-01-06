@@ -1,11 +1,7 @@
-'use client'
+'use client';
 import axios from "axios";
 import { toast } from "react-toastify";
-// import { useRouter } from "next/navigation";
-
-
 let activeUser: any = {}
-console.log(typeof window);
 if (typeof window !== 'undefined') {
   activeUser = localStorage.getItem("user") || {};
 }
@@ -15,10 +11,12 @@ export class Helper {
       axios
         .post(`/api`, { username: activeUser })
         .then((res: any) => {
-          if (res.status === 200) {
+          if (res?.status === 200) {
             toast.success(res.data);
-            localStorage.removeItem("user");
-            location.reload();
+            if (typeof window !== 'undefined') {
+              localStorage.removeItem("user");
+              location.reload();
+            }
           }
         })
         .catch((err: any) => {
@@ -29,15 +27,18 @@ export class Helper {
 
   public static isLoginUser = () => {
     if (Object.keys(activeUser).length === 0) {
-      // const router = useRouter()
-      location.replace("/auth/login");
+      if (typeof window !== 'undefined') {
+        location.replace("/auth/login");
+      }
     }
   }
 
-  public static userData = async () => {
+  public static userData = () => {
     if (Object.keys(activeUser).length !== 0) {
-      const res = await axios.get(`/api?username=${activeUser}`);
+      const res = axios.get(`/api?username=${activeUser}`);
       return res;
+    } else {
+      return []
     }
   }
 }

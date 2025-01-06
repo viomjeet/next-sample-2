@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect } from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { HiOutlineBell } from "react-icons/hi2";
@@ -5,14 +6,17 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { MdOutlineLogout } from "react-icons/md";
 import { Helper } from "../../../public/helper/script";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 function Header() {
   let [activeUser, setActiveUser] = useState<any>([]);
+
   useEffect(() => {
     const getActiveUser = async () => {
       try {
+        debugger;
         const res: any = await Helper.userData();
-        if (res.status === 200) {
+        if (res?.data?.length > 0 && res.status === 200) {
           const data: any = res.data;
           setActiveUser(data);
         }
@@ -21,10 +25,6 @@ function Header() {
       }
     };
     getActiveUser();
-
-    const res = Helper.userData();
-
-    // setActiveUser();
   }, []);
   return (
     <header className="flex items-center justify-between px-6 py-4 bg-white border-b-4 border-indigo-600">
@@ -116,12 +116,12 @@ function Header() {
           >
             <div className="py-1">
               <MenuItem>
-                <a
-                  href="#"
+                <Link
+                  href="/dashboard/profile"
                   className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
                 >
                   Profile
-                </a>
+                </Link>
               </MenuItem>
               <form action="#" method="POST">
                 <MenuItem>

@@ -55,35 +55,45 @@ function CreateTodo(props: any) {
       toast.error("Fields can't be blank.");
     } else {
       setSetLoading(true);
-      let activeUser = localStorage.getItem("user");
+      let activeUser = window?.localStorage.getItem("user");
       let request = {
         title: Todos.title,
         body: Todos.body,
         priority: Todos.priority,
         status: Todos.status,
-        createdDate: props?.isEdit? Todos.createdDate: new Date().toISOString(),
+        createdDate: props?.isEdit
+          ? Todos.createdDate
+          : new Date().toISOString(),
         createdby: activeUser !== null ? activeUser : "",
         todosrc: "",
-        updatedDate: props?.isEdit ? new Date().toISOString() : Todos.updatedDate,
+        updatedDate: props?.isEdit
+          ? new Date().toISOString()
+          : Todos.updatedDate,
         edited: props?.isEdit ? 1 : 0,
       };
       try {
         debugger;
         let data: any;
         if (props?.isEdit) {
-          data = await axios.put(`/dashboard/todos/api/${props?.isEditId}`, request);
+          data = await axios.put(
+            `/dashboard/todos/api/${props?.isEditId}`,
+            request
+          );
         } else {
           data = await axios.post("/dashboard/todos/api", request);
         }
         if (data.status === 200) {
           toast.success(data?.data);
-          setTodos(blankTodo);
-          if (props?.isEdit) {
-            props?.discard();
-          }
-          props.loadData();
-          props.close();
-          setSetLoading(false);
+          setTimeout(() => {
+            setTodos(blankTodo);
+            if (props?.isEdit) {
+              props?.discard();
+            }
+            props.loadData();
+
+            props.close();
+            setSetLoading(false);
+          }, 1000);
         } else {
           toast.error(data?.data);
           setSetLoading(false);
@@ -232,7 +242,7 @@ function CreateTodo(props: any) {
             title="Close"
             type="submit"
             onClick={handleCancel}
-            className="flex py-2 px-2 w-20 ml-2 justify-center items-center gap-x-2 text-sm font-semibold rounded-sm border border-transparent bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:bg-red-700 disabled:opacity-50 disabled:pointer-events-none"
+            className="flex py-2 px-2 w-20 ml-2 justify-center items-center gap-x-2 text-sm font-semibold rounded-sm border border-transparent bg-slate-100 hover:bg-slate-300 focus:outline-none focus:bg-slate-400 disabled:opacity-50 disabled:pointer-events-none"
           >
             Close
             {/* <MdClear className="text-2xl" /> */}
