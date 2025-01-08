@@ -5,9 +5,9 @@ const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CR
     if (err) {
         return console.error(err.message);
     }
-    db.run('update todos set edited=1 where id=20',(err)=>{
-        console.error(err ? err.message : "updatedDate added.")
-    })
+    // db.run(`update users set profilePic=''`,(err)=>{
+    //     console.error(err ? err.message : "updatedDate added.")
+    // })
     console.log("sqlite3 Connected.");
 });
 
