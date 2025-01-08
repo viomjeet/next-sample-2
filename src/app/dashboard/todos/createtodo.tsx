@@ -37,7 +37,6 @@ function CreateTodo(props: any) {
     props?.isEdit ? props?.editTodo : blankTodo
   );
   const [saveLoading, setSetLoading] = useState<any>(false);
-
   const handleCreateTodo = async (event: any) => {
     event.preventDefault();
     setTodos({
@@ -130,123 +129,127 @@ function CreateTodo(props: any) {
   return (
     <div className="">
       <form onSubmit={handleCreateTodo}>
-        <input
-          className={`${
-            Todos.titleError
-              ? "border-red-600 placeholder:text-red-500"
-              : "border-gray-200 placeholder:text-gray-500"
-          } py-2 px-2 block w-full focus:z-10bg-white border mb-1 rounded-sm focus:outline-none  focus:bg-white
+        <div className="px-4">
+          <input
+            className={`${
+              Todos.titleError
+                ? "border-red-600 placeholder:text-red-500"
+                : "border-gray-200 placeholder:text-gray-500"
+            } py-2 px-2 block w-full focus:z-10bg-white border mb-1 rounded-sm focus:outline-none  focus:bg-white
             `}
-          type="text"
-          value={Todos.title}
-          onChange={(e: any) => handleUpdateTodos(e, "title")}
-          placeholder="Todo Title"
-        />
-        <textarea
-          rows={4}
-          className={`${
-            Todos.bodyError
-              ? "border-red-600 placeholder:text-red-500"
-              : "border-gray-200 placeholder:text-gray-500"
-          } py-2 px-2 block w-full focus:z-10bg-white border mb-1 rounded-sm focus:outline-none  focus:bg-white
+            type="text"
+            value={Todos.title}
+            onChange={(e: any) => handleUpdateTodos(e, "title")}
+            placeholder="Todo Title"
+          />
+          <textarea
+            rows={4}
+            className={`${
+              Todos.bodyError
+                ? "border-red-600 placeholder:text-red-500"
+                : "border-gray-200 placeholder:text-gray-500"
+            } py-2 px-2 block w-full focus:z-10bg-white border mb-1 rounded-sm focus:outline-none  focus:bg-white
             `}
-          onChange={(e: any) => handleUpdateTodos(e, "body")}
-          value={Todos.body}
-          placeholder="Todo discription"
-        />
+            onChange={(e: any) => handleUpdateTodos(e, "body")}
+            value={Todos.body}
+            placeholder="Todo discription"
+          />
 
-        <div className="mb-4">
-          <Menu as="div" className="relative inline-block text-left">
-            <div>
-              <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-xs bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                Priority: {Todos.priority}
-                <ChevronDownIcon
-                  aria-hidden="true"
-                  className="-mr-1 size-5 text-gray-400"
-                />
-              </MenuButton>
-            </div>
-
-            <MenuItems
-              transition
-              className="absolute left-0 z-10 mt-1 w-56 origin-top-left rounded-xs bg-white shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-            >
-              <div className="py-1">
-                {priorityList.map((item: any) => (
-                  <MenuItem key={item.id}>
-                    <a
-                      onClick={() => handleUpdateTodos(item, "priority")}
-                      href="#"
-                      id={`id_${item.id}`}
-                      className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
-                    >
-                      {item.value}
-                    </a>
-                  </MenuItem>
-                ))}
+          <div className="mb-4">
+            <Menu as="div" className="relative inline-block text-left">
+              <div>
+                <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-xs bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                  Priority: {Todos.priority}
+                  <ChevronDownIcon
+                    aria-hidden="true"
+                    className="-mr-1 size-5 text-gray-400"
+                  />
+                </MenuButton>
               </div>
-            </MenuItems>
-          </Menu>
 
-          <Menu as="div" className="relative inline-block text-left ml-2">
-            <div>
-              <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-xs bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                Status: {Todos.status}
-                <ChevronDownIcon
-                  aria-hidden="true"
-                  className="-mr-1 size-5 text-gray-400"
-                />
-              </MenuButton>
-            </div>
+              <MenuItems
+                transition
+                className="absolute left-0 z-10 mt-1 w-56 origin-top-left rounded-xs bg-white shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+              >
+                <div className="py-1">
+                  {priorityList.map((item: any) => (
+                    <MenuItem key={item.id}>
+                      <a
+                        onClick={() => handleUpdateTodos(item, "priority")}
+                        href="#"
+                        id={`id_${item.id}`}
+                        className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
+                      >
+                        {item.value}
+                      </a>
+                    </MenuItem>
+                  ))}
+                </div>
+              </MenuItems>
+            </Menu>
 
-            <MenuItems
-              transition
-              className="absolute right-0 z-0 mt-1 w-56 origin-top-right rounded-xs bg-white shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-            >
-              <div className="py-1">
-                {statusList.map((item: any) => (
-                  <MenuItem key={item.id}>
-                    <a
-                      onClick={() => handleUpdateTodos(item, "status")}
-                      href="#"
-                      id={`id_${item.id}`}
-                      className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
-                    >
-                      {item.value}
-                    </a>
-                  </MenuItem>
-                ))}
+            <Menu as="div" className="relative inline-block text-left ml-2">
+              <div>
+                <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-xs bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                  Status: {Todos.status}
+                  <ChevronDownIcon
+                    aria-hidden="true"
+                    className="-mr-1 size-5 text-gray-400"
+                  />
+                </MenuButton>
               </div>
-            </MenuItems>
-          </Menu>
+
+              <MenuItems
+                transition
+                className="absolute right-0 z-0 mt-1 w-56 origin-top-right rounded-xs bg-white shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+              >
+                <div className="py-1">
+                  {statusList.map((item: any) => (
+                    <MenuItem key={item.id}>
+                      <a
+                        onClick={() => handleUpdateTodos(item, "status")}
+                        href="#"
+                        id={`id_${item.id}`}
+                        className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
+                      >
+                        {item.value}
+                      </a>
+                    </MenuItem>
+                  ))}
+                </div>
+              </MenuItems>
+            </Menu>
+          </div>
         </div>
-
-        <div className="flex justify-between">
-          <button
-            title="Add Todo"
-            type="submit"
-            disabled={saveLoading}
-            className="flex py-2 px-2 w-full justify-center items-center gap-x-2 text-sm font-semibold rounded-sm border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
-          >
-            {props?.isEditId ? (
-              <>
-                Update Todo <MdPlaylistAddCheck className="text-2xl" />
-              </>
-            ) : (
-              <>
-                Add Todo <MdPlaylistAdd className="text-2xl" />
-              </>
-            )}
-          </button>
-          <button
-            title="Close"
-            type="submit"
-            onClick={handleCancel}
-            className="flex py-2 px-2 w-20 ml-2 justify-center items-center gap-x-2 text-sm font-semibold rounded-sm border border-transparent bg-slate-100 hover:bg-slate-300 focus:outline-none focus:bg-slate-400 disabled:opacity-50 disabled:pointer-events-none"
-          >
-            Close
-            {/* <MdClear className="text-2xl" /> */}
-          </button>
+        <hr className="my-4" />
+        <div className="px-4 pb-4">
+          <div className="flex justify-between">
+            <button
+              title="Add Todo"
+              type="submit"
+              disabled={saveLoading || (props?.isEdit && JSON.stringify(props?.editTodo)===JSON.stringify(Todos))}
+              className="flex py-2 px-2 w-full justify-center items-center gap-x-2 text-sm font-semibold rounded-sm border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+            >
+              {props?.isEditId ? (
+                <>
+                  Update Todo <MdPlaylistAddCheck className="text-2xl" />
+                </>
+              ) : (
+                <>
+                  Add Todo <MdPlaylistAdd className="text-2xl" />
+                </>
+              )}
+            </button>
+            <button
+              title="Close"
+              type="submit"
+              onClick={handleCancel}
+              className="flex py-2 px-2 w-20 ml-2 justify-center items-center gap-x-2 text-sm font-semibold rounded-sm border border-transparent bg-slate-100 hover:bg-slate-300 focus:outline-none focus:bg-slate-400 disabled:opacity-50 disabled:pointer-events-none"
+            >
+              Close
+              {/* <MdClear className="text-2xl" /> */}
+            </button>
+          </div>
         </div>
       </form>
     </div>

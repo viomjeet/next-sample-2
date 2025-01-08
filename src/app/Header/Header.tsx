@@ -101,11 +101,14 @@ function Header() {
                     Hi, {activeUser[0]?.fullname.split(" ")[0]}
                   </span>
                   <MenuButton className="relative block w-8 h-8 overflow-hidden rounded-full shadow focus:outline-none">
+                    {activeUser[0]?.profilePic===null?(
+                    <span className="text-xl">{activeUser[0]?.fullname.split(" ")[0].substring(0,2)}</span>):(
                     <img
                       className="object-cover w-full h-full"
                       src={activeUser[0]?.profilePic}
                       alt="Your avatar"
                     />
+                  )}
                     <ChevronDownIcon
                       aria-hidden="true"
                       className="-mr-1 size-5 text-gray-400"
