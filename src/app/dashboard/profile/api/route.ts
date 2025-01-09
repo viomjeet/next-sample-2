@@ -33,11 +33,6 @@ export async function POST(req: Request) {
     } catch (error) {
         return NextResponse.json(error, { status: 500 });
     }
-
-
-
-
-
     //   try {
     //     const formData = await req.formData();
     //     const file = formData.get("file") as File;
@@ -50,4 +45,29 @@ export async function POST(req: Request) {
     //     console.error(e);
     //     return NextResponse.json({ status: "fail", error: e });
     //   }
+}
+
+export async function GET(request: Request) {
+    const users = await request.json();
+    const { username } = users
+    try {
+        // const query = `update users set profilePic='' where username='${username}'`;
+        // db.run(query, (err: any) => {
+        //     return new NextResponse(err?.message);
+        // })
+
+        const results: any = await new Promise((resolve, reject) => {
+            db.all(`SELECT * FROM users where username='${username}'`, (err: Error, results: Response) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+        return NextResponse.json(results);
+    } catch (e) {
+        console.error(e);
+        return NextResponse.json({ status: "fail", error: e });
+    }
 }
