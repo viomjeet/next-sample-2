@@ -5,9 +5,10 @@ export async function GET(request: NextRequest) {
     const reqUrl = await request.url
     const { searchParams } = new URL(reqUrl)
     let username = searchParams.get("username");
+    let type = searchParams.get("type");
     try {
         const results: any = await new Promise((resolve, reject) => {
-            db.all('SELECT fullname, useremail, username, status, profilePic FROM users where status=? and username=?', 'active', username, (err: Error, results: Response) => {
+            db.all('SELECT fullname, useremail, username, status, profilePic FROM users where status=? and username=?', type, username, (err: Error, results: Response) => {
                 if (err) {
                     reject(err);
                 } else {

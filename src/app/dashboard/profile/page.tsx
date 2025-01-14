@@ -5,6 +5,7 @@ import { Helper } from "../../../../public/helper/script";
 import axios from "axios";
 import { MdDeleteOutline } from "react-icons/md";
 import { AiOutlineCamera } from "react-icons/ai";
+import { confirmAlert } from "react-confirm-alert";
 function page() {
   if (typeof window !== "undefined") {
     Helper.isLoginUser();
@@ -18,7 +19,7 @@ function page() {
 
   const getActiveUser = async () => {
     try {
-      const res: any = await Helper.userData();
+      const res: any = await Helper.userData('active');
       if (res?.data?.length > 0 && res.status === 200) {
         const data: any = res.data;
         setActiveUser(data);
@@ -27,26 +28,6 @@ function page() {
       toast.error(e?.message);
     }
   };
-
-  async function uploadFile(e: any) {
-    e.preventDefault();
-    try {
-      const formData = new FormData();
-      formData.append("file", fileInput?.current?.files?.[0]!);
-      let request: any = {};
-      request.username = activeUser[0]?.username;
-      formData.append("formField", activeUser[0]?.username);
-      const result = await axios.post("/dashboard/profile/api", formData);
-      if (result.status === 200) {
-        toast.success(result?.data);
-        getActiveUser();
-      } else {
-        toast.error(result?.data);
-      }
-    } catch (e: any) {
-      toast.error(e?.message);
-    }
-  }
 
   async function handleUpload(e: any, type: string) {
     try {
@@ -59,6 +40,9 @@ function page() {
       if (result.status === 200) {
         toast.success(result?.data);
         getActiveUser();
+        if (typeof window !== "undefined") {
+          location.reload();
+        }
       } else {
         toast.error(result?.data);
       }
@@ -68,28 +52,52 @@ function page() {
   }
 
   async function deletePic() {
-    let request: any={};
-    request.username = activeUser[0]?.username;
-    try {
-      const result = await axios("/dashboard/profile/api", request);
-      if (result.status === 200) {
-        toast.success(result?.data);
-        getActiveUser();
-      } else {
-        toast.error(result?.data);
-      }
-    } catch (e: any) {
-      toast.error(e?.message);
-    }
+    confirmAlert({
+      title: "Alert!",
+      message: `Are you sure you want to delete the profile picture?`,
+      buttons: [
+        {
+          label: "Confirm",
+          onClick: async () => {
+            try {
+              const result = await axios.delete(
+                `/dashboard/profile/api?username=${activeUser[0]?.username}&file=${activeUser[0]?.profilePic}`
+              );
+              if (result.status === 200) {
+                toast.success(result?.data);
+                getActiveUser();
+                if (typeof window !== "undefined") {
+                  location.reload();
+                }
+              } else {
+                toast.error(result?.data);
+              }
+            } catch (e: any) {
+              toast.error(e?.message);
+            }
+          },
+        },
+        {
+          label: "Cancel",
+          onClick: () => {},
+        },
+      ],
+      closeOnEscape: false,
+      closeOnClickOutside: false,
+    });
   }
 
   return (
     <>
       <div className="overflow-hidden bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-      <ToastContainer position="bottom-right" autoClose={1500} />
-        <div className="relative z-0 h-35 md:h-65">
+        <ToastContainer position="bottom-right" autoClose={1500} />
+        <div className="relative z-0 h-35 md:h-65 backdrop-blur-[2px]">
           <img
-            src="/page-cover-01.png"
+            src={
+              activeUser[0]?.profilePic !== null
+                ? activeUser[0]?.profilePic
+                : "/page-cover-01.png"
+            }
             alt="profile cover"
             className=" h-96 w-full object-cover object-center"
           />

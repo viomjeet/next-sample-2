@@ -33,9 +33,9 @@ export class Helper {
     }
   }
 
-  public static userData = () => {
+  public static userData = (type:any) => {
     if (Object.keys(activeUser).length !== 0) {
-      const res = axios.get(`/api?username=${activeUser}`);
+      const res = axios.get(`/api?username=${activeUser}&type=${type}`);
       return res;
     } else {
       return []

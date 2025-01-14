@@ -33,39 +33,25 @@ export async function POST(req: Request) {
     } catch (error) {
         return NextResponse.json(error, { status: 500 });
     }
-    //   try {
-    //     const formData = await req.formData();
-    //     const file = formData.get("file") as File;
-    //     const arrayBuffer = await file.arrayBuffer();
-    //     const buffer = new Uint8Array(arrayBuffer);
-    //     await fs.writeFile(`./public/uploads/${file.name}`, buffer);
-    //     revalidatePath("/");
-    //     return NextResponse.json({ status: "success" });
-    //   } catch (e) {
-    //     console.error(e);
-    //     return NextResponse.json({ status: "fail", error: e });
-    //   }
 }
 
-export async function GET(request: Request) {
-    const users = await request.json();
-    const { username } = users
+export async function DELETE(request: Request) {
+    const reqUrl = await request.url
+    const { searchParams } = new URL(reqUrl)
+    let username = searchParams.get("username");
+    let file = searchParams.get("file");
     try {
-        // const query = `update users set profilePic='' where username='${username}'`;
-        // db.run(query, (err: any) => {
-        //     return new NextResponse(err?.message);
-        // })
-
-        const results: any = await new Promise((resolve, reject) => {
-            db.all(`SELECT * FROM users where username='${username}'`, (err: Error, results: Response) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(results);
-                }
-            });
-        });
-        return NextResponse.json(results);
+        const filePath = `public/${file}`;
+        const isFile: any = await fs.unlink(filePath)
+        if (isFile?.status === 'fail') {
+            return new NextResponse("File not found.");
+        } else {
+            const query = `update users set profilePic=null where username='${username}'`;
+            db.run(query, (err: any) => {
+                return new NextResponse(err?.message);
+            })
+            return NextResponse.json('Profle picture removed.');
+        }
     } catch (e) {
         console.error(e);
         return NextResponse.json({ status: "fail", error: e });
