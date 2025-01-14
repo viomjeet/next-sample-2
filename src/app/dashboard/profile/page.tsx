@@ -1,9 +1,11 @@
 "use client";
 import React, { useRef, useState, useEffect } from "react";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { Helper } from "../../../../public/helper/script";
 import axios from "axios";
+import { MdDeleteOutline } from "react-icons/md";
 import { AiOutlineCamera } from "react-icons/ai";
+import { confirmAlert } from "react-confirm-alert";
 function page() {
   if (typeof window !== "undefined") {
     Helper.isLoginUser();
@@ -17,7 +19,7 @@ function page() {
 
   const getActiveUser = async () => {
     try {
-      const res: any = await Helper.userData();
+      const res: any = await Helper.userData('active');
       if (res?.data?.length > 0 && res.status === 200) {
         const data: any = res.data;
         setActiveUser(data);
@@ -27,8 +29,7 @@ function page() {
     }
   };
 
-  async function uploadFile(e: any) {
-    e.preventDefault();
+  async function handleUpload(e: any, type: string) {
     try {
       const formData = new FormData();
       formData.append("file", fileInput?.current?.files?.[0]!);
@@ -39,6 +40,9 @@ function page() {
       if (result.status === 200) {
         toast.success(result?.data);
         getActiveUser();
+        if (typeof window !== "undefined") {
+          location.reload();
+        }
       } else {
         toast.error(result?.data);
       }
@@ -47,16 +51,57 @@ function page() {
     }
   }
 
+  async function deletePic() {
+    confirmAlert({
+      title: "Alert!",
+      message: `Are you sure you want to delete the profile picture?`,
+      buttons: [
+        {
+          label: "Confirm",
+          onClick: async () => {
+            try {
+              const result = await axios.delete(
+                `/dashboard/profile/api?username=${activeUser[0]?.username}&file=${activeUser[0]?.profilePic}`
+              );
+              if (result.status === 200) {
+                toast.success(result?.data);
+                getActiveUser();
+                if (typeof window !== "undefined") {
+                  location.reload();
+                }
+              } else {
+                toast.error(result?.data);
+              }
+            } catch (e: any) {
+              toast.error(e?.message);
+            }
+          },
+        },
+        {
+          label: "Cancel",
+          onClick: () => {},
+        },
+      ],
+      closeOnEscape: false,
+      closeOnClickOutside: false,
+    });
+  }
+
   return (
     <>
-      <div className="overflow-hidden rounded-sm bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-        <div className="relative z-0 h-35 md:h-65">
+      <div className="overflow-hidden bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+        <ToastContainer position="bottom-right" autoClose={1500} />
+        <div className="relative z-0 h-35 md:h-65 backdrop-blur-[2px]">
           <img
-            src="/page-cover-01.png"
+            src={
+              activeUser[0]?.profilePic !== null
+                ? activeUser[0]?.profilePic
+                : "/page-cover-01.png"
+            }
             alt="profile cover"
-            className=" h-96 w-full rounded-tl-sm rounded-tr-sm object-cover object-center"
+            className=" h-96 w-full object-cover object-center"
           />
-          <div className="absolute bottom-1 right-1 z-10 xsm:bottom-4 xsm:right-4 bg-white/10 p-1 backdrop-blur rounded-sm px-4 py-2">
+          <div className="absolute bottom-1 right-1 z-10 xsm:bottom-4 xsm:right-4 bg-white/10 p-1 backdrop-blur px-4 py-2">
             <label
               htmlFor="cover"
               className="flex cursor-pointer items-center justify-center gap-2 rounded text-sm font-medium text-white hover:bg-opacity-90 xsm:px-4"
@@ -74,21 +119,21 @@ function page() {
           style={{ marginTop: "-96px" }}
         >
           <div className="relative z-30 mx-auto -mt-22 h-30 w-full max-w-30 rounded-full bg-white/10 p-1 backdrop-blur sm:h-44 sm:max-w-44 sm:p-3">
-            {activeUser[0]?.profilePic === null ? (
-              <div className="flex w-full h-full justify-center align-center">
-                <div className="text-6xl rounded-full">
-                  {activeUser[0]?.fullname.split(" ")[0].substring(0, 2)}
-                </div>
-              </div>
-            ) : (
-              <div className="relative drop-shadow-2">
+            <div className="relative drop-shadow-2 flex w-full h-full justify-center align-bottom">
+              {activeUser.length > 0 && activeUser[0]?.profilePic !== null ? (
                 <img
                   src={activeUser[0]?.profilePic}
                   alt={activeUser[0]?.profilePic}
                   className="rounded-full min-h-30 w-96"
                   style={{ height: "152px" }}
                 />
+              ) : (
+                <div className="text-7xl uppercase bg-green-100 w-full flex justify-center items-center text-center h-full rounded-full">
+                  {activeUser[0]?.fullname.split(" ")[0].substring(0, 2)}
+                </div>
+              )}
 
+              {activeUser[0]?.profilePic === null ? (
                 <label
                   htmlFor="profile"
                   className="absolute bottom-0 right-0 flex h-8.5 w-8.5 cursor-pointer items-center justify-center rounded-full bg-green-900 p-1 backdrop-blur px-2 py-2 text-white hover:bg-opacity-90 sm:bottom-2 sm:right-2"
@@ -96,13 +141,23 @@ function page() {
                   <AiOutlineCamera className="text-lg" />
                   <input
                     type="file"
+                    accept="image/png, image/gif, image/jpeg"
                     name="profile"
+                    ref={fileInput}
+                    onChange={(e: any) => handleUpload(e, "profile")}
                     id="profile"
                     className="sr-only"
                   />
                 </label>
-              </div>
-            )}
+              ) : (
+                <label
+                  onClick={deletePic}
+                  className="absolute bottom-0 right-0 flex h-8.5 w-8.5 cursor-pointer items-center justify-center rounded-full bg-green-900 p-1 backdrop-blur px-2 py-2 text-white hover:bg-opacity-90 sm:bottom-2 sm:right-2"
+                >
+                  <MdDeleteOutline className="text-lg" />
+                </label>
+              )}
+            </div>
           </div>
           <div className="mt-4">
             <h3 className="mb-1.5 text-2xl font-semibold text-black dark:text-white">
