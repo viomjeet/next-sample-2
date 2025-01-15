@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import CreateTodo from "../todos/createtodo";
+import CreateTodo from "../components/createtodo";
 import { Helper } from "../../../../public/helper/script";
 import { MdDeleteOutline } from "react-icons/md";
 import { MdPlaylistAdd } from "react-icons/md";
@@ -10,6 +10,7 @@ import { confirmAlert } from "react-confirm-alert";
 import { GrGroup } from "react-icons/gr";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import Inactiveusers from "../components/inactiveusers";
 
 function page() {
   const router = useRouter();
@@ -66,6 +67,8 @@ function page() {
     }
   };
 
+  
+
   useEffect(() => {
     getTodos();
   }, []);
@@ -119,7 +122,7 @@ function page() {
   return (
     <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
       <ToastContainer position="bottom-right" autoClose={1500} />
-      <div className="container py-6 mx-auto">
+      <div className="container lg:px-6 py-6 mx-auto">
         <div className="flex justify-between align-middle">
           <h3 className="text-3xl font-medium text-gray-700">Todos</h3>
           <button
@@ -183,127 +186,121 @@ function page() {
           </div>
         )}
 
-        <div className="flex flex-col">
-          <div className="my-3">
-            {dataLoad
-              ? "Loading..."
-              : todoList.map((o: any) => {
-                  let isClass = "";
-                  switch (o.status) {
-                    case "Started":
-                      isClass = "text-green-900";
-                      break;
-                    case "Completed":
-                      isClass = "text-red-900";
-                      break;
-                    case "Progress":
-                      isClass = "text-orange-900";
-                      break;
-                    case "Waiting":
-                      isClass = "text-blue-900";
-                      break;
-                    default:
-                      isClass = "text-slate-900";
-                      break;
-                  }
-                  const markup = { __html: o?.body };
-                  return (
-                    <div key={o.id}>
-                      <div className="bg-white px-2 py-4 mb-4 pr-4 shadow-sm rounded-sm flex align-top justify-between">
-                        <div className="capitalize block w-full px-4 py-2 p-5">
-                          <p className="text-xs mb-3">
+        <div className="grid grid-cols-2 mt-4 gap-4 sm:grid-cols-3 md:gap-6 xl:gap-8">
+          <div className="group md:col-span-2">
+            {dataLoad ? (
+              <div className="px-4 py-4 bg-white mb-4">Loading....</div>
+            ) : (
+              todoList.map((o: any, i: any) => {
+                let isClass: any = "";
+                const setClass: any = {
+                  progress: "text-green-900 font-bold",
+                  Completed: "text-red-900 font-bold",
+                  Progress: "text-orange-900 font-bold",
+                  Waiting: "text-blue-900 font-bold",
+                };
+                isClass = setClass[o.status] || "text-slate-900 font-bold";
+
+                const markup = { __html: o?.body };
+                return (
+                  <div
+                    key={o.id}
+                    className={`${
+                      i === todoList?.length - 1 ? "" : "mb-4"
+                    } px-4 py-4 bg-white shadow-sm rounded-sm flex align-top justify-between`}
+                  >
+                    <div className="capitalize block w-full px-4 py-2 p-5">
+                      <p className="text-xs mb-3">
+                        <span className="text-slate-500">
+                          {new Date(o.createdDate).toLocaleString()} {o.status}
+                        </span>
+                      </p>
+                      <h4 className={`${isClass} font-sans text-md font-bold`}>
+                        {o.title}
+                      </h4>
+                      <p
+                        className="my-3 text-sm text-slate-700"
+                        dangerouslySetInnerHTML={markup}
+                      ></p>
+                      <div className="flex text-sm justify-between align-baseline">
+                        <div className="flex align-baseline">
+                          <p className="text-xs">
+                            Prority:{" "}
+                            <span className="text-slate-500">{o.priority}</span>
+                          </p>
+                          <p className="text-xs ml-3">
+                            Status: <span className={isClass}>{o.status}</span>
+                          </p>
+                          <p className="text-xs ml-3">
+                            Created By:{" "}
                             <span className="text-slate-500">
-                              {new Date(o.createdDate).toLocaleString()}{" "}
-                              {o.status}
+                              {window?.localStorage.getItem("user")}
                             </span>
                           </p>
-                          <h4
-                            className={`${isClass} font-sans text-md font-bold`}
-                          >
-                            {o.title}
-                          </h4>
-                          <p
-                            className="my-3 text-sm text-slate-700"
-                            dangerouslySetInnerHTML={markup}
-                          ></p>
-                          <div className="flex text-sm justify-between align-baseline">
-                            <div className="flex align-baseline">
-                              <p className="text-xs">
-                                Prority:{" "}
-                                <span className="text-slate-500">
-                                  {o.priority}
-                                </span>
-                              </p>
-                              <p className="text-xs ml-3">
-                                Status:{" "}
-                                <span className={isClass}>{o.status}</span>
-                              </p>
-                              <p className="text-xs ml-3">
-                                Created By:{" "}
-                                <span className="text-slate-500">
-                                  {window?.localStorage.getItem("user")}
-                                </span>
-                              </p>
-                            </div>
-                            <div className="text-xs text-slate-400">
-                              {o.edited === 1 && (
-                                <span className="mr-2">
-                                  Updated on:{" "}
-                                  {new Date(o.updatedDate).toLocaleString()}
-                                </span>
-                              )}
-                            </div>
-                          </div>
                         </div>
-
-                        <div
-                          className="max-h-10 inline-flex rounded-md shadow-sm"
-                          role="group"
-                        >
-                          <button
-                            type="button"
-                            disabled={isEditTodo.isId === o.id}
-                            className="px-2 py-2 text-gray-900 bg-white border border-r-0 disabled:opacity-5 border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 rounded-s-sm"
-                            onClick={() => handleEdit(o)}
-                          >
-                            {editLoad ? (
-                              <div role="status">
-                                <svg
-                                  aria-hidden="true"
-                                  className="w-4 h-4 text-gray-200 animate-spin dark:text-gray-600 fill-slate-600"
-                                  viewBox="0 0 100 101"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                                    fill="currentColor"
-                                  />
-                                  <path
-                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                                    fill="currentFill"
-                                  />
-                                </svg>
-                                <span className="sr-only">Loading...</span>
-                              </div>
-                            ) : (
-                              <CiEdit className="text-xl" />
-                            )}
-                          </button>
-
-                          <button
-                            type="button"
-                            disabled={isEditTodo.isId === o.id}
-                            className="px-2 py-2 text-gray-900 bg-white border border-l-0 disabled:opacity-5 border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 rounded-e-sm"
-                            onClick={() => handleDelete(o.id)}
-                          >
-                            <MdDeleteOutline className="text-xl" />
-                          </button>
+                        <div className="text-xs text-slate-400">
+                          {o.edited === 1 && (
+                            <span className="mr-2">
+                              Updated on:{" "}
+                              {new Date(o.updatedDate).toLocaleString()}
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
-                  );
-                })}
+                    <div
+                      className="max-h-10 inline-flex rounded-md shadow-sm"
+                      role="group"
+                    >
+                      <button
+                        type="button"
+                        disabled={isEditTodo.isId === o.id}
+                        className="px-2 py-2 text-gray-900 bg-white border border-r-0 disabled:opacity-5 border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 rounded-s-sm"
+                        onClick={() => handleEdit(o)}
+                      >
+                        {editLoad ? (
+                          <div role="status">
+                            <svg
+                              aria-hidden="true"
+                              className="w-4 h-4 text-gray-200 animate-spin dark:text-gray-600 fill-slate-600"
+                              viewBox="0 0 100 101"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                fill="currentColor"
+                              />
+                              <path
+                                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                fill="currentFill"
+                              />
+                            </svg>
+                            <span className="sr-only">Loading...</span>
+                          </div>
+                        ) : (
+                          <CiEdit className="text-xl" />
+                        )}
+                      </button>
+
+                      <button
+                        type="button"
+                        disabled={isEditTodo.isId === o.id}
+                        className="px-2 py-2 text-gray-900 bg-white border border-l-0 disabled:opacity-5 border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 rounded-e-sm"
+                        onClick={() => handleDelete(o.id)}
+                      >
+                        <MdDeleteOutline className="text-xl" />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+          <div className="group bg-white">
+            <div className="px-4 py-4">
+              <Inactiveusers />
+            </div>
           </div>
         </div>
       </div>

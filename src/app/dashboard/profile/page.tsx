@@ -6,7 +6,12 @@ import axios from "axios";
 import { MdDeleteOutline } from "react-icons/md";
 import { AiOutlineCamera } from "react-icons/ai";
 import { confirmAlert } from "react-confirm-alert";
+import { useSearchParams } from "next/navigation";
 function page() {
+  const searchParams = useSearchParams();
+  const username = searchParams.get("username");
+  console.log("username:", username);
+
   if (typeof window !== "undefined") {
     Helper.isLoginUser();
   }
@@ -14,12 +19,28 @@ function page() {
   let [activeUser, setActiveUser] = useState<any>([]);
 
   useEffect(() => {
-    getActiveUser();
+    if (username === null) {
+      getActiveUser();
+    } else {
+      getCurrentUser(username);
+    }
   }, []);
 
   const getActiveUser = async () => {
     try {
-      const res: any = await Helper.userData('active');
+      const res: any = await Helper.userData("active");
+      if (res?.data?.length > 0 && res.status === 200) {
+        const data: any = res.data;
+        setActiveUser(data);
+      }
+    } catch (e: any) {
+      toast.error(e?.message);
+    }
+  };
+  
+  const getCurrentUser = async (username:any) => {
+    try {
+      const res: any = axios.get(`/api?username=${username}&type=${'inactive'}`);
       if (res?.data?.length > 0 && res.status === 200) {
         const data: any = res.data;
         setActiveUser(data);
