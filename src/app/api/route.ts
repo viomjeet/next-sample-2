@@ -2,13 +2,14 @@ import db from '../../database'
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
-    const reqUrl = await request.url
-    const { searchParams } = new URL(reqUrl)
-    let username = searchParams.get("username");
+    const reqUrl = await request.url;
+    const { searchParams } = new URL(reqUrl);
     let type = searchParams.get("type");
+    let username = searchParams.get("username");
     try {
         const results: any = await new Promise((resolve, reject) => {
-            db.all('SELECT fullname, useremail, username, status, profilePic FROM users where status=? and username=?', type, username, (err: Error, results: Response) => {
+            let query: any = type === "active" ? `status='active' and username='${username}'` : `status='inactive'`
+            db.all(`SELECT id, fullname, useremail, username, status, profilePic FROM users where ${query}`, (err: Error, results: Response) => {
                 if (err) {
                     reject(err);
                 } else {
