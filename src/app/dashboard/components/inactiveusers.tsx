@@ -44,7 +44,7 @@ function Inactiveusers() {
             <div>
               <a
                 className="px-2 py-1 rounded-sm text-xs font-normal mr-2 text-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                href={`/dashboard/profile?username=${o.username}&type=${o.status}`}
+                href={`/dashboard/profile?u=${btoa(o.username)}&t=${btoa(o.status)}`}
               >
                 View Profile
               </a>
