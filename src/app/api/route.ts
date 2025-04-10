@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     let username = searchParams.get("username");
     try {
         const results: any = await new Promise((resolve, reject) => {
-            let query: any = type === "active" ? `status='active' and username='${username}'` : `status='inactive'`
+            let query: any = type === "active" ? `status='active' and username='${username}'` : type && username?`status='${type}' and username='${username}'`: `status='inactive'`
             db.all(`SELECT id, fullname, useremail, username, status, profilePic FROM users where ${query}`, (err: Error, results: Response) => {
                 if (err) {
                     reject(err);
