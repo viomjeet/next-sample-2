@@ -222,7 +222,7 @@ function page() {
                     <a
                       className="hover:text-primary"
                       aria-label="social-icon"
-                      href="/profile"
+                      href="#"
                     >
                       <svg
                         className="fill-current"
@@ -248,7 +248,7 @@ function page() {
                     <a
                       className="hover:text-primary"
                       aria-label="social-icon"
-                      href="/profile"
+                      href="#"
                     >
                       <svg
                         className="fill-current"
@@ -279,7 +279,7 @@ function page() {
                     <a
                       className="hover:text-primary"
                       aria-label="social-icon"
-                      href="/profile"
+                      href="#"
                     >
                       <svg
                         className="fill-current"
@@ -310,7 +310,7 @@ function page() {
                     <a
                       className="hover:text-primary"
                       aria-label="social-icon"
-                      href="/profile"
+                      href="#"
                     >
                       <svg
                         className="fill-current"
@@ -336,7 +336,7 @@ function page() {
                     <a
                       className="hover:text-primary"
                       aria-label="social-icon"
-                      href="/profile"
+                      href="#"
                     >
                       <svg
                         className="fill-current"

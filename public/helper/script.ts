@@ -26,14 +26,17 @@ export class Helper {
   }
 
   public static isLoginUser = () => {
-    if (Object.keys(activeUser).length === 0) {
-      if (typeof window !== 'undefined') {
+    let hasV2Session = localStorage.getItem("V2Session");
+    if (hasV2Session !== null) {
+      if (new Date(hasV2Session) < new Date(new Date().getTime())) {
         location.replace("/auth/login");
+        localStorage.removeItem("user");
+        localStorage.removeItem("UsrSession");
       }
     }
   }
 
-  public static userData = (type:any) => {
+  public static userData = (type: any) => {
     if (Object.keys(activeUser).length !== 0) {
       const res = axios.get(`/api?username=${activeUser}&type=${type}`);
       return res;
