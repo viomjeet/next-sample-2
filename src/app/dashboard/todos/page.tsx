@@ -67,8 +67,6 @@ function page() {
     }
   };
 
-  
-
   useEffect(() => {
     getTodos();
   }, []);

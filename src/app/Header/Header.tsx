@@ -102,7 +102,7 @@ function Header() {
                   <div className="py-1">
                     <MenuItem>
                       <a
-                        href={`/dashboard/profile?username=${activeUser[0]?.username}&type=${activeUser[0]?.status}`}
+                        href={`/dashboard/profile?u=${btoa(activeUser[0]?.username)}&t=${btoa(activeUser[0]?.status)}`}
                         className="flex justify-start items-center px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
                       >
                         <LuUserRound className="mr-1 text-xl" />

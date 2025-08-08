@@ -20,7 +20,6 @@ function page() {
         useremail: useremail.value,
         userpassword: userpassword.value,
       };
-      debugger;
       axios
         .post(`/auth/login/api`, request)
         .then((response) => {
@@ -30,8 +29,10 @@ function page() {
           setLoading(false);
           setTimeout(() => {
             if (typeof window !== "undefined") {
-              location.replace("/dashboard");
+              let sessionTime = new Date(new Date().getTime() + 30 * 60000).toString();
+              localStorage.setItem("UsrSession", sessionTime);
               localStorage.setItem("user", response.data);
+              location.replace("/dashboard");
             }
           }, 50);
         })

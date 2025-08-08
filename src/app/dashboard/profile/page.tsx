@@ -9,8 +9,8 @@ import { confirmAlert } from "react-confirm-alert";
 import { useSearchParams } from "next/navigation";
 function page() {
   const searchParams = useSearchParams();
-  const username = searchParams.get("username");
-  const type = searchParams.get("type");
+  const username = searchParams.get("u");
+  const type = searchParams.get("t");
   let activeUsername: any = false;
   if (typeof window !== "undefined") {
     Helper.isLoginUser();
@@ -28,7 +28,7 @@ function page() {
   const getActiveUser = async (username: any = null, type: any = null) => {
     setLoading(true);
     try {
-      let res = await axios.get(`/api?username=${username}&type=${type}`);
+      let res = await axios.get(`/api?username=${atob(username)}&type=${atob(type)}`);
       setActiveUser([]);
       if (res?.data?.length > 0 && res.status === 200) {
         const data: any = res.data;
@@ -222,7 +222,7 @@ function page() {
                     <a
                       className="hover:text-primary"
                       aria-label="social-icon"
-                      href="/profile"
+                      href="#"
                     >
                       <svg
                         className="fill-current"
@@ -248,7 +248,7 @@ function page() {
                     <a
                       className="hover:text-primary"
                       aria-label="social-icon"
-                      href="/profile"
+                      href="#"
                     >
                       <svg
                         className="fill-current"
@@ -279,7 +279,7 @@ function page() {
                     <a
                       className="hover:text-primary"
                       aria-label="social-icon"
-                      href="/profile"
+                      href="#"
                     >
                       <svg
                         className="fill-current"
@@ -310,7 +310,7 @@ function page() {
                     <a
                       className="hover:text-primary"
                       aria-label="social-icon"
-                      href="/profile"
+                      href="#"
                     >
                       <svg
                         className="fill-current"
@@ -336,7 +336,7 @@ function page() {
                     <a
                       className="hover:text-primary"
                       aria-label="social-icon"
-                      href="/profile"
+                      href="#"
                     >
                       <svg
                         className="fill-current"
