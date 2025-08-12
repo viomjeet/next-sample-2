@@ -51,6 +51,7 @@ function page() {
         );
         if (res.status === 200) {
           const data: any = await res.data;
+          data.map((o: any) => (o.isLoading = false));
           setTodoList(data);
           setDataLoad(false);
         } else {
@@ -98,7 +99,14 @@ function page() {
     });
   };
 
+  const updateLoading = (item: any, value: any) => {
+    let index = todoList.findIndex((x: any) => x.id === item.id);
+    todoList[index].isLoading = value;
+    setTodoList(todoList);
+  };
+
   const handleEdit = async (item: any) => {
+    updateLoading(item, true);
     setEditLoad(true);
     const data = await axios.get(`/dashboard/todos/api/${item.id}`);
     if (data.status === 200) {
@@ -106,8 +114,10 @@ function page() {
       setIsEdit({ isEdit: true, isId: item.id });
       setUpdateTodos(data?.data[0]);
       setEditLoad(false);
+      updateLoading(item, false);
     } else {
       setEditLoad(false);
+      updateLoading(item, false);
       toast.error(data?.data);
     }
   };
@@ -256,7 +266,7 @@ function page() {
                         className="px-2 py-2 text-gray-900 bg-white border border-r-0 disabled:opacity-5 border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 rounded-s-sm"
                         onClick={() => handleEdit(o)}
                       >
-                        {editLoad ? (
+                        {o.isLoading ? (
                           <div role="status">
                             <svg
                               aria-hidden="true"

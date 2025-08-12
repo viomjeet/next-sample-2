@@ -26,6 +26,11 @@ export class Helper {
   }
 
   public static isLoginUser = () => {
+    if (Object.keys(activeUser).length === 0) {
+      if (typeof window !== 'undefined') {
+        location.replace("/auth/login");
+      }
+    }
     let hasV2Session = localStorage.getItem("V2Session");
     if (hasV2Session !== null) {
       if (new Date(hasV2Session) < new Date(new Date().getTime())) {
